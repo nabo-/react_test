@@ -20,11 +20,7 @@ module.exports = function (grunt) {
 			tmp: 'tmp',
 			html_src: 'src/html',
 			scss_src: 'src/scss',
-			js_src: 'src/js',
-			//ts_src: 'src/ts',
-			img_src: 'src/img',
-			sprite_src: 'src/sprite_img',
-			dataUri_src: 'src/data_uri'
+			js_src: 'src/js'
 		},
 
 		clean: ['**/.DS_Store','**/.sass-cache','<%= path.tmp %>'],
@@ -76,63 +72,13 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-
-		// typescript: {
-		// 	// ファイル数の数だけタスクを記述
-		// 	dialog: {
-		// 		src: ['<%= path.ts_src %>/hogehoge/*.ts'],
-		// 		dest: '<%= path.js_src %>/hogehoge.js',
-		// 		options:{
-		// 			sourceMap: false,
-		// 			comments : true
-		// 		}
-		// 	},
-		// },
-
-		concat: {
-			build: {
-				src : [
-					'<%= path.js_src %>/*.js'
-				],
-				dest: '<%= path.tmp %>/js/all.js'
-			},
-			dev: {
-				src : [
-					'<%= path.js_src %>/*.js'
-				],
-				dest: '<%= path.build %>/js/all.js'
-			}
-			
-		},
-
-		uglify: {
-			normal: {
+		browserify: {
+			dist: {
 				files: {
-					'<%= path.build %>/js/all.js' : '<%= path.tmp %>/js/all.js',
-				}
+					'<%= path.build %>/js/app.js': '<%= path.js_src %>/app.js'
+				},
 			}
 		},
-
-		imagemin: {
-			noraml: {
-				files: [{
-					expand: true,
-					cwd: '<%= path.img_src %>',
-					src: ['*.{png,jpg}'],
-					dest: '<%= path.build %>/img/'
-				}]
-			}
-		},
-
-		sprite: {
-			// ファイル数の数だけタスクを記述
-			all:{
-				src: '<%= path.sprite_src %>/**/*.png',
-				dest: '<%= path.img_src %>/**.png',
-				destCss: '<%= path.scss_src %>/_sprite.scss'
-			}
-		},
-
 		assemble: {
 			options: {
 				layoutdir: '<%= path.html_src %>/layouts/',
@@ -163,11 +109,7 @@ module.exports = function (grunt) {
 			},
 			javascript: {
 				files: ['<%= path.js_src %>/**/*.js'],
-				tasks: ['dev:js']
-			},
-			typescript: {
-				files: ['<%= path.ts_src %>/**/*.ts'],
-				tasks: ['dev:ts']
+				tasks: ['build:js']
 			},
 			html: {
 				files: ['<%= path.html_src %>/**/*.hbs'],
@@ -182,15 +124,9 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('build:html', ['assemble']);
 	grunt.registerTask('build:css', ['sass', 'autoprefixer', 'csso']);
-	//grunt.registerTask('build:ts', ['typescript', 'concat:build', 'uglify']);
-	grunt.registerTask('build:js', ['concat:build', 'uglify']);
-	grunt.registerTask('build:img', ['sprite', 'imagemin']);
+	grunt.registerTask('build:js', ['browserify']);
 
-
-	grunt.registerTask('build', ['build:html', 'build:css', 'build:ts', 'build:js', 'build:img', 'clean']);
-
-	//grunt.registerTask('dev:ts', ['typescript', 'concat:dev']);
-	grunt.registerTask('dev:js', ['concat:dev']);
+	grunt.registerTask('build', ['build:html', 'build:css', 'build:js', 'clean']);
 
 	grunt.registerTask('live', ['connect', 'watch']);
 
