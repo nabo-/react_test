@@ -75,8 +75,9 @@ module.exports = function (grunt) {
 		browserify: {
 			dist: {
 				files: {
-					'<%= path.build %>/js/app.js': '<%= path.js_src %>/app.js'
-				},
+					'<%= path.build %>/js/index/app.js': '<%= path.js_src %>/index/app.js',
+					'<%= path.build %>/js/form/app.js': '<%= path.js_src %>/form/app.js'
+				}
 			}
 		},
 		assemble: {
