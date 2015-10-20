@@ -18983,19 +18983,66 @@ module.exports = require('./lib/React');
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+var Header = require('./module/Header.jsx');
+var Body = require('./module/Body.jsx');
+var Footer = require('./module/Footer.jsx');
+
 var Index = React.createClass({displayName: "Index",
 	render: function(){
 		return (
-			React.createElement("p", null, "hoge")
-			);
+			React.createElement("div", {className: "component"}, 
+				React.createElement("div", {className: "component__header"}, 
+					React.createElement(Header, null)
+				), 
+				React.createElement("div", {className: "component__body"}, 
+					React.createElement(Body, null)
+				), 
+				React.createElement("div", {className: "component__footer"}, 
+					React.createElement(Footer, null)
+				)
+			)
+		);
 	}
 });
-
-
 
 ReactDOM.render(
 	React.createElement(Index, null),
 	document.getElementById('content')
 	);
 
-},{"react":157,"react-dom":29}]},{},[158]);
+},{"./module/Body.jsx":159,"./module/Footer.jsx":160,"./module/Header.jsx":161,"react":157,"react-dom":29}],159:[function(require,module,exports){
+var React = require('react');
+
+var Body = React.createClass({displayName: "Body",
+	render: function(){
+		return (React.createElement("p", null, "ぼでぃ"));
+	}
+});
+
+module.exports = Body;
+
+},{"react":157}],160:[function(require,module,exports){
+var React = require('react');
+
+var Footer = React.createClass({displayName: "Footer",
+	render: function(){
+		return (React.createElement("p", null, "フッター"));
+	}
+});
+
+module.exports = Footer;
+
+},{"react":157}],161:[function(require,module,exports){
+var React = require('react');
+
+
+var Header = React.createClass({displayName: "Header",
+	render: function(){
+		return (React.createElement("h1", null, "ヘッダー"));
+	}
+});
+
+
+module.exports = Header;
+
+},{"react":157}]},{},[158]);
