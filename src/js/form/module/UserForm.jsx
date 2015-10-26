@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var UserForm = React.createClass({
 
@@ -21,6 +22,7 @@ var UserForm = React.createClass({
 		return (
 			<div>
 				<table>
+				<tbody>
 					<tr>
 						<td>
 						<label>名前</label>
@@ -37,6 +39,7 @@ var UserForm = React.createClass({
 						<input type="text" ref="mail"/>
 						</td>
 					</tr>
+					</tbody>
 				</table>
 
 				<div style={{textAlign:"right"}}>

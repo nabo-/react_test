@@ -1,7 +1,8 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 
-var UserForm = require('./module/UserForm.jsx');
-var UserList = require('./module/UserList.jsx');
+var UserForm = require('./UserForm.jsx');
+var UserList = require('./UserList.jsx');
 
 
 var UserBox = React.createClass({
@@ -15,7 +16,7 @@ var UserBox = React.createClass({
 	},
 	render: function(){
 		return (
-			<div style="{{width:"300px"}}">
+			<div style={{width:'300px'}}>
 				<UserForm addUser={this.handleAddUser}/>
 				<UserList userData={this.state.userData}/>
 			</div>
