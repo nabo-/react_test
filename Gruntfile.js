@@ -76,7 +76,8 @@ module.exports = function (grunt) {
 			dist: {
 				files: {
 					'<%= path.build %>/js/index/app.js': '<%= path.js_src %>/index/app.js',
-					'<%= path.build %>/js/form/app.js': '<%= path.js_src %>/form/app.js'
+					'<%= path.build %>/js/form/app.js': '<%= path.js_src %>/form/app.js',
+					'<%= path.build %>/js/pr/app.js': '<%= path.js_src %>/pr/app.js'
 				}
 			}
 		},
