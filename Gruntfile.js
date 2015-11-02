@@ -77,7 +77,8 @@ module.exports = function (grunt) {
 				files: {
 					'<%= path.build %>/js/index/app.js': '<%= path.js_src %>/index/app.js',
 					'<%= path.build %>/js/form/app.js': '<%= path.js_src %>/form/app.js',
-					'<%= path.build %>/js/pr/app.js': '<%= path.js_src %>/pr/app.js'
+					'<%= path.build %>/js/pr/app.js': '<%= path.js_src %>/pr/app.js',
+					'<%= path.build %>/js/event/app.js': '<%= path.js_src %>/event/app.js'
 				}
 			}
 		},
@@ -110,7 +111,7 @@ module.exports = function (grunt) {
 				tasks: ['build:css']
 			},
 			javascript: {
-				files: ['<%= path.js_src %>/**/*.jsx'],
+				files: ['<%= path.js_src %>/**/*.{jsx,js}'],
 				tasks: ['build:js']
 			},
 			html: {
