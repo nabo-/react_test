@@ -12,7 +12,7 @@ var App = React.createClass({
 	},
 
 	onClick: function(event){
-		console.log('hoge');
+
 		this.setState({
 			count: this.state.count +1
 		});

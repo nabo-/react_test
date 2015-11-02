@@ -78,7 +78,8 @@ module.exports = function (grunt) {
 					'<%= path.build %>/js/index/app.js': '<%= path.js_src %>/index/app.js',
 					'<%= path.build %>/js/form/app.js': '<%= path.js_src %>/form/app.js',
 					'<%= path.build %>/js/pr/app.js': '<%= path.js_src %>/pr/app.js',
-					'<%= path.build %>/js/event/app.js': '<%= path.js_src %>/event/app.js'
+					'<%= path.build %>/js/event/app.js': '<%= path.js_src %>/event/app.js',
+					'<%= path.build %>/js/form2/app.js': '<%= path.js_src %>/form2/app.js'
 				}
 			}
 		},
@@ -134,4 +135,4 @@ module.exports = function (grunt) {
 	grunt.registerTask('live', ['connect', 'watch']);
 
 	grunt.registerTask('default', 'build');
-}
+};
