@@ -20336,61 +20336,81 @@ var request = require('superagent');
 
 var Test = require('./module/Test.jsx');
 
-var Users = React.createClass({displayName: "Users",
+var TodoList = React.createClass({displayName: "TodoList",
+
 	getInitialState: function(){
 		return {
-			users: [{id: 1, name: 'foo'},{id: 2, name: 'hoge'}]
+			todos: [
+				{id: 1, text: 'hogehoge1'},
+				{id: 2, text: 'hogehogehoge2'},
+				{id: 3, text: 'hogehogehogehoge3'}
+			]
 		};
 	},
-	componentDidMount: function(){
-		var _this = this;
-			request.get('demo.json', function(err,res){
-				_this.setState(function(){
-					return {
-						users: res.body.users
-					};
-				});
-			});
+
+	deleteTodo: function(id){
+		this.setState({
+			todos: this.state.todos.filter(function(todo){
+				return todo.id !== id;
+			})
+		});
 	},
-	render: function() {
-		var users = this.state.users.map(function(user){
+
+	render: function(){
+
+		var _this = this;
+
+		var todos = this.state.todos.map(function(nyan){
 			return (
-				React.createElement(Test, {id: user.id, name: user.name, key: user.id})
+				React.createElement("li", {key: nyan.id}, 
+					React.createElement(Test, {onDelete: _this.deleteTodo, todo: nyan})
+				)
 			);
 		});
+
 		return (
-			React.createElement("div", null, 
-				React.createElement("p", null, "ユーザー一覧"), 
-				users
+			React.createElement("ul", null, 
+				todos
 			)
 		);
 	}
-
 });
 
 
 ReactDOM.render(
-	React.createElement(Users, null),
+	React.createElement(TodoList, null),
 	document.getElementById('content')
 	);
 
 },{"./module/Test.jsx":162,"react":158,"react-dom":30,"superagent":160}],162:[function(require,module,exports){
 var React = require('react');
 
-var User = React.createClass({displayName: "User",
-	propTypes: {
-		name: React.PropTypes.string.isRequired,
-		id: React.PropTypes.number.isRequired
+var Todo  = React.createClass({displayName: "Todo",
+
+	PropTypes: {
+		todo: React.PropTypes.shape({
+			id: React.PropTypes.number.isRequired,
+			text: React.PropTypes.string.isRequired
+		}),
+
+		onDelete: React.PropTypes.func.isRequired
+	},
+
+	_onDelete: function(){
+		this.props.onDelete(this.props.todo.id);
 	},
 
 	render: function() {
 		return (
-			React.createElement("p", null, this.props.id, ": ", this.props.name)
+			React.createElement("div", null, 
+			React.createElement("span", null, this.props.todo.text), 
+			React.createElement("button", {onClick: this._onDelete}, "delete")
+			)
 		);
 	}
 
 });
 
-module.exports = User;
+module.exports = Todo;
 
 },{"react":158}]},{},[161]);

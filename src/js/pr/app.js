@@ -4,40 +4,48 @@ var request = require('superagent');
 
 var Test = require('./module/Test.jsx');
 
-var Users = React.createClass({
+var TodoList = React.createClass({
+
 	getInitialState: function(){
 		return {
-			users: [{id: 1, name: 'foo'},{id: 2, name: 'hoge'}]
+			todos: [
+				{id: 1, text: 'hogehoge1'},
+				{id: 2, text: 'hogehogehoge2'},
+				{id: 3, text: 'hogehogehogehoge3'}
+			]
 		};
 	},
-	componentDidMount: function(){
-		var _this = this;
-			request.get('demo.json', function(err,res){
-				_this.setState(function(){
-					return {
-						users: res.body.users
-					};
-				});
-			});
+
+	deleteTodo: function(id){
+		this.setState({
+			todos: this.state.todos.filter(function(todo){
+				return todo.id !== id;
+			})
+		});
 	},
-	render: function() {
-		var users = this.state.users.map(function(user){
+
+	render: function(){
+
+		var _this = this;
+
+		var todos = this.state.todos.map(function(nyan){
 			return (
-				<Test id={user.id} name={user.name} key={user.id} />
+				<li key={nyan.id}>
+					<Test onDelete={_this.deleteTodo} todo={nyan} />
+				</li>
 			);
 		});
+
 		return (
-			<div>
-				<p>ユーザー一覧</p>
-				{users}
-			</div>
+			<ul>
+				{todos}
+			</ul>
 		);
 	}
-
 });
 
 
 ReactDOM.render(
-	<Users />,
+	<TodoList />,
 	document.getElementById('content')
 	);

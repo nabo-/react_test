@@ -1,17 +1,29 @@
 var React = require('react');
 
-var User = React.createClass({
-	propTypes: {
-		name: React.PropTypes.string.isRequired,
-		id: React.PropTypes.number.isRequired
+var Todo  = React.createClass({
+
+	PropTypes: {
+		todo: React.PropTypes.shape({
+			id: React.PropTypes.number.isRequired,
+			text: React.PropTypes.string.isRequired
+		}),
+
+		onDelete: React.PropTypes.func.isRequired
+	},
+
+	_onDelete: function(){
+		this.props.onDelete(this.props.todo.id);
 	},
 
 	render: function() {
 		return (
-			<p>{this.props.id}: {this.props.name}</p>
+			<div>
+			<span>{this.props.todo.text}</span>
+			<button onClick={this._onDelete}>delete</button>
+			</div>
 		);
 	}
 
 });
 
-module.exports = User;
+module.exports = Todo;
