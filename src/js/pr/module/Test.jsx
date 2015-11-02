@@ -1,21 +1,17 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 
-var Test = React.createClass({
-
+var User = React.createClass({
 	propTypes: {
-		propName: React.PropTypes.string
+		name: React.PropTypes.string.isRequired,
+		id: React.PropTypes.number.isRequired
 	},
 
 	render: function() {
-
 		return (
-			<div>
-			<p>{propName}</p>
-			</div>
+			<p>{this.props.id}: {this.props.name}</p>
 		);
 	}
 
 });
 
-module.exports = Test;
+module.exports = User;
