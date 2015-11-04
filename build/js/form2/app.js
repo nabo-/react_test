@@ -18983,59 +18983,130 @@ module.exports = require('./lib/React');
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-var Counter = require('./module/Counter.jsx');
+var Form = require('./module/Form.jsx');
 
-var App = React.createClass({displayName: "App",
+ReactDOM.render(
+	React.createElement(Form, null),
+	document.getElementById('content')
+	);
+
+},{"./module/Form.jsx":159,"react":157,"react-dom":29}],159:[function(require,module,exports){
+var React = require('react');
+var PropTypes = React.PropTypes;
+
+var Text = require('./Text.jsx');
+var Submit = require('./Submit.jsx');
+var List = require('./List.jsx');
+
+var Form = React.createClass({displayName: "Form",
 
 	getInitialState: function(){
 		return {
-			count: 0
+			textValue: "hogehoge",
+			textData: []
 		};
 	},
 
-	onClick: function(event){
+	onChange: function(event){
+		this.setState({
+			textValue: event.target.value
+		});
+	},
+
+	onSubmit: function(){
+		var data = this.state.textData;
+		data.push(this.state.textValue);
 
 		this.setState({
-			count: this.state.count +1
+			textData: data
 		});
 	},
 
 	render: function() {
 		return (
 			React.createElement("div", null, 
-			React.createElement(Counter, {onCountUp: this.onClick, count: this.state.count})
+			React.createElement(List, {text_data: this.state.textData}), 
+			React.createElement(Text, {text_value: this.state.textValue, onChangeText: this.onChange}), 
+			React.createElement(Submit, {onClickSubmit: this.onSubmit})
 			)
 		);
 	}
 
 });
 
-ReactDOM.render(
-	React.createElement(App, null),
-	document.getElementById('content')
-	);
+module.exports = Form;
 
-},{"./module/Counter.jsx":159,"react":157,"react-dom":29}],159:[function(require,module,exports){
+},{"./List.jsx":160,"./Submit.jsx":161,"./Text.jsx":162,"react":157}],160:[function(require,module,exports){
 var React = require('react');
+var PropTypes = React.PropTypes;
 
-var Counter = React.createClass({displayName: "Counter",
+var List = React.createClass({displayName: "List",
 
-	PropTypes: {
-		count: React.PropTypes.number.isRequired,
-		onCountUp: React.PropTypes.func.isRequired
+	propTypes: {
+		text_data: PropTypes.arrayOf(React.PropTypes.string).isRequired
+	},
+
+	render: function() {
+		var textList = this.props.text_data.map(function(text, index) {
+			return (
+				React.createElement("p", {key: index}, text)
+			);
+		});
+
+		return (
+			React.createElement("div", null, 
+				textList
+			)
+		);
+	}
+
+});
+
+module.exports = List;
+
+},{"react":157}],161:[function(require,module,exports){
+var React = require('react');
+var PropTypes = React.PropTypes;
+
+var Submit = React.createClass({displayName: "Submit",
+
+	propTypes: {
+		onClickSubmit : PropTypes.func.isRequired
 	},
 
 	render: function() {
 		return (
 			React.createElement("div", null, 
-			React.createElement("p", null, this.props.count), 
-			React.createElement("button", {onClick: this.props.onCountUp}, "Click")
+				React.createElement("button", {type: "button", onClick: this.props.onClickSubmit}, "追加")
 			)
 		);
 	}
 
 });
 
-module.exports = Counter;
+module.exports = Submit;
+
+},{"react":157}],162:[function(require,module,exports){
+var React = require('react');
+var PropTypes = React.PropTypes;
+
+var Text = React.createClass({displayName: "Text",
+
+	propTypes: {
+		text_value: PropTypes.string.isRequired,
+		onChangeText : PropTypes.func.isRequired
+	},
+
+	render: function() {
+		return (
+			React.createElement("div", null, 
+				React.createElement("input", {type: "text", value: this.props.text_value, onChange: this.props.onChangeText})
+			)
+		);
+	}
+
+});
+
+module.exports = Text;
 
 },{"react":157}]},{},[158]);

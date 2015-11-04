@@ -5,7 +5,7 @@ var Text = React.createClass({
 
 	propTypes: {
 		text_value: PropTypes.string.isRequired,
-		onChangeText : propTypes.func.isRequired
+		onChangeText : PropTypes.func.isRequired
 	},
 
 	render: function() {
