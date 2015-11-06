@@ -18989,15 +18989,53 @@ ReactDOM.render(
 	document.getElementById('content')
 	);
 
-},{"./module/Todo.jsx":161,"react":157,"react-dom":29}],159:[function(require,module,exports){
+},{"./module/Todo.jsx":164,"react":157,"react-dom":29}],159:[function(require,module,exports){
+var React = require('react');
+var PropTypes = React.PropTypes;
+
+var DeleteButton = React.createClass({displayName: "DeleteButton",
+
+	propTypes: {
+		on_delete: PropTypes.func.isRequired
+	},
+
+	render: function() {
+		return (
+			React.createElement("button", {onClick: this.props.on_delete}, "Delete")
+		);
+	}
+
+});
+
+module.exports = DeleteButton;
+
+},{"react":157}],160:[function(require,module,exports){
 var React = require('react');
 var PropTypes = React.PropTypes;
 
 var InputText = React.createClass({displayName: "InputText",
 
+	PropTypes: {
+		text_value: PropTypes.string.isRequired,
+		onSubmit: PropTypes.func.isRequired
+	},
+
+	_onSubmit: function(){
+		var text = this.props.text_value;
+		this.props.onSubmit(text);
+	},
+
 	render: function() {
+
 		return (
-			React.createElement("div", null)
+			React.createElement("div", {className: "inputBar"}, 
+				React.createElement("div", {className: "inputBar__body"}, 
+					React.createElement("input", {type: "text", value: "", className: "inputBar__input"})
+				), 
+				React.createElement("div", {className: "inputBar__right"}, 
+					React.createElement("button", {onClick: this._onSubmit}, "Add")
+				)
+			)
 		);
 	}
 
@@ -19005,23 +19043,80 @@ var InputText = React.createClass({displayName: "InputText",
 
 module.exports = InputText;
 
-},{"react":157}],160:[function(require,module,exports){
+},{"react":157}],161:[function(require,module,exports){
 var React = require('react');
 var PropTypes = React.PropTypes;
+var ListItem = require('./ListItem.jsx');
+
+
+var List = React.createClass({displayName: "List",
+
+	getInitialState: function(){
+		return {
+			list_data: [
+					{id:1, text: 'hogehogehogehoge'},
+					{id:2, text: 'watanabe eisuke'},
+					{id:3, text: 'hotei tomoyasu'}
+				]
+		};
+	},
+
+
+	deleteOwnObject: function(id){
+		this.setState({
+			list_data: this.state.list_data.filter(function(list){
+				return list.id !== id;
+			})
+		});
+	},
+
+	render: function() {
+		var _this = this;
+
+		var lists = this.state.list_data.map(function(list){
+			return (
+				React.createElement(ListItem, {text_value: list.text, deleteList: _this.deleteOwnObject, id: list.id, key: list.id})
+			);
+		});
+
+		return (
+			React.createElement("ul", {className: "addList"}, 
+				lists
+			)
+		);
+	}
+
+});
+
+module.exports = List;
+
+},{"./ListItem.jsx":162,"react":157}],162:[function(require,module,exports){
+var React = require('react');
+var PropTypes = React.PropTypes;
+
+var TextItem = require('./TextItem.jsx');
+var DeleteButton = require('./DeleteButton.jsx');
+
 
 var ListItem = React.createClass({displayName: "ListItem",
 
 	PropTypes: {
 		text_value: PropTypes.string.isRequired,
-		on_click_delete: PropsTypes.func.isRequired
+		id: PropTypes.number.isRequired,
+		deleteList: PropTypes.func.isRequired
+	},
+
+	_deleteList: function(){
+		var id = this.props.id;
+		this.props.deleteList(id);
 	},
 
 	render: function() {
 		return (
 			React.createElement("li", {className: "addList__item"}, 
 				React.createElement("div", {className: "addList__layout"}, 
-					React.createElement("div", null, React.createElement("p", null, this.props.text_value)), 
-					React.createElement("div", null, React.createElement("button", {onClick: this.props.on_click_delete}, "Delete"))
+					React.createElement("div", null, React.createElement(TextItem, {text: this.props.text_value})), 
+					React.createElement("div", null, React.createElement(DeleteButton, {on_delete: this._deleteList}))
 				)
 			)
 		);
@@ -19031,7 +19126,26 @@ var ListItem = React.createClass({displayName: "ListItem",
 
 module.exports = ListItem;
 
-},{"react":157}],161:[function(require,module,exports){
+},{"./DeleteButton.jsx":159,"./TextItem.jsx":163,"react":157}],163:[function(require,module,exports){
+var React = require('react');
+var PropTypes = React.PropTypes;
+
+var TextItem = React.createClass({displayName: "TextItem",
+
+	propTypes: {
+		text: PropTypes.string.isRequired
+	},
+	
+	render: function() {
+		return (
+			React.createElement("p", null, this.props.text)
+		);
+	}
+});
+
+module.exports = TextItem;
+
+},{"react":157}],164:[function(require,module,exports){
 var React = require('react');
 var PropTypes = React.PropTypes;
 
@@ -19040,10 +19154,34 @@ var List = require('./List.jsx');
 
 var Todo = React.createClass({displayName: "Todo",
 
+	getInitialState: function(){
+		return {
+			listData: []
+		};
+	},
+
+	addList: function(text){
+		var data = this.state.listData;
+		data.push(text);
+
+		this.setState({
+			listData: data
+		});
+	},
+
 	render: function() {
+
+		// var list_wrap;
+		//
+		// if(this.state.listData.length > 0){
+		// 	list_wrap = <List list_data={this.state.listData} />;
+		// } else {
+		// 	list_wrap = '';
+		// }
+
 		return (
 			React.createElement("div", null, 
-			React.createElement(InputText, null), 
+			React.createElement(InputText, {onSubmit: this.addList}), 
 			React.createElement(List, null)
 			)
 		);
@@ -19053,4 +19191,4 @@ var Todo = React.createClass({displayName: "Todo",
 
 module.exports = Todo;
 
-},{"./InputText.jsx":159,"./List.jsx":160,"react":157}]},{},[158]);
+},{"./InputText.jsx":160,"./List.jsx":161,"react":157}]},{},[158]);
