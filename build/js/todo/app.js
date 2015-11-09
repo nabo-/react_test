@@ -18991,6 +18991,7 @@ ReactDOM.render(
 
 },{"./module/Todo.jsx":164,"react":157,"react-dom":29}],159:[function(require,module,exports){
 var React = require('react');
+var ReactDOM = require('react-dom');
 var PropTypes = React.PropTypes;
 
 var DeleteButton = React.createClass({displayName: "DeleteButton",
@@ -19009,28 +19010,34 @@ var DeleteButton = React.createClass({displayName: "DeleteButton",
 
 module.exports = DeleteButton;
 
-},{"react":157}],160:[function(require,module,exports){
+},{"react":157,"react-dom":29}],160:[function(require,module,exports){
 var React = require('react');
+var ReactDOM = require('react-dom');
 var PropTypes = React.PropTypes;
 
 var InputText = React.createClass({displayName: "InputText",
 
 	PropTypes: {
 		text_value: PropTypes.string.isRequired,
-		onSubmit: PropTypes.func.isRequired
+		on_submit: PropTypes.func.isRequired
 	},
 
 	_onSubmit: function(){
-		var text = this.props.text_value;
-		this.props.onSubmit(text);
+		var text = ReactDOM.findDOMNode(this.refs.text).value.trim();
+
+		if(!text){
+			return;
+		}
+		this.props.on_submit(text);
+
+		ReactDOM.findDOMNode(this.refs.text).value = '';
 	},
 
 	render: function() {
-
 		return (
 			React.createElement("div", {className: "inputBar"}, 
 				React.createElement("div", {className: "inputBar__body"}, 
-					React.createElement("input", {type: "text", value: "", className: "inputBar__input"})
+					React.createElement("input", {type: "text", placeholder: "テキストを入力", className: "inputBar__input", ref: "text"})
 				), 
 				React.createElement("div", {className: "inputBar__right"}, 
 					React.createElement("button", {onClick: this._onSubmit}, "Add")
@@ -19043,45 +19050,51 @@ var InputText = React.createClass({displayName: "InputText",
 
 module.exports = InputText;
 
-},{"react":157}],161:[function(require,module,exports){
+},{"react":157,"react-dom":29}],161:[function(require,module,exports){
 var React = require('react');
+var ReactDOM = require('react-dom');
 var PropTypes = React.PropTypes;
 var ListItem = require('./ListItem.jsx');
 
 
 var List = React.createClass({displayName: "List",
 
-	getInitialState: function(){
-		return {
-			list_data: [
-					{id:1, text: 'hogehogehogehoge'},
-					{id:2, text: 'watanabe eisuke'},
-					{id:3, text: 'hotei tomoyasu'}
-				]
-		};
+	PropTypes: {
+		data_list: PropTypes.shape({
+			id: PropTypes.number.isRequired,
+			text: PropTypes.string.isRequired
+		}),
+		delete_list_item: PropTypes.func.isRequired
 	},
 
-
-	deleteOwnObject: function(id){
-		this.setState({
-			list_data: this.state.list_data.filter(function(list){
-				return list.id !== id;
-			})
-		});
+	_deleteListItem: function(id){
+		this.props.delete_list_item(id);
 	},
 
 	render: function() {
 		var _this = this;
 
-		var lists = this.state.list_data.map(function(list){
+		var lists = this.props.data_list.map(function(list, index){
 			return (
-				React.createElement(ListItem, {text_value: list.text, deleteList: _this.deleteOwnObject, id: list.id, key: list.id})
+				React.createElement(ListItem, {text: list.text, delete_list: _this._deleteListItem, id: list.id, key: list.id})
 			);
 		});
 
+		var ulbox;
+
+		if(lists.length > 0){
+			ulbox = (
+				React.createElement("ul", {className: "addList"}, 
+					lists
+				)
+			);
+		}else{
+			ulbox = ('');
+		}
+
 		return (
-			React.createElement("ul", {className: "addList"}, 
-				lists
+			React.createElement("div", null, 
+				ulbox
 			)
 		);
 	}
@@ -19090,8 +19103,9 @@ var List = React.createClass({displayName: "List",
 
 module.exports = List;
 
-},{"./ListItem.jsx":162,"react":157}],162:[function(require,module,exports){
+},{"./ListItem.jsx":162,"react":157,"react-dom":29}],162:[function(require,module,exports){
 var React = require('react');
+var ReactDOM = require('react-dom');
 var PropTypes = React.PropTypes;
 
 var TextItem = require('./TextItem.jsx');
@@ -19101,22 +19115,22 @@ var DeleteButton = require('./DeleteButton.jsx');
 var ListItem = React.createClass({displayName: "ListItem",
 
 	PropTypes: {
-		text_value: PropTypes.string.isRequired,
+		text: PropTypes.string.isRequired,
 		id: PropTypes.number.isRequired,
-		deleteList: PropTypes.func.isRequired
+		delete_list: PropTypes.func.isRequired
 	},
 
-	_deleteList: function(){
+	_deleteListItem: function(){
 		var id = this.props.id;
-		this.props.deleteList(id);
+		this.props.delete_list(id);
 	},
 
 	render: function() {
 		return (
 			React.createElement("li", {className: "addList__item"}, 
 				React.createElement("div", {className: "addList__layout"}, 
-					React.createElement("div", null, React.createElement(TextItem, {text: this.props.text_value})), 
-					React.createElement("div", null, React.createElement(DeleteButton, {on_delete: this._deleteList}))
+					React.createElement("div", null, React.createElement(TextItem, {text: this.props.text})), 
+					React.createElement("div", null, React.createElement(DeleteButton, {on_delete: this._deleteListItem}　))
 				)
 			)
 		);
@@ -19126,7 +19140,7 @@ var ListItem = React.createClass({displayName: "ListItem",
 
 module.exports = ListItem;
 
-},{"./DeleteButton.jsx":159,"./TextItem.jsx":163,"react":157}],163:[function(require,module,exports){
+},{"./DeleteButton.jsx":159,"./TextItem.jsx":163,"react":157,"react-dom":29}],163:[function(require,module,exports){
 var React = require('react');
 var PropTypes = React.PropTypes;
 
@@ -19147,42 +19161,51 @@ module.exports = TextItem;
 
 },{"react":157}],164:[function(require,module,exports){
 var React = require('react');
+var ReactDOM = require('react-dom');
 var PropTypes = React.PropTypes;
 
 var InputText = require('./InputText.jsx');
 var List = require('./List.jsx');
 
+
 var Todo = React.createClass({displayName: "Todo",
 
 	getInitialState: function(){
 		return {
-			listData: []
+			dataList: [],
+			idNum: 0
 		};
 	},
 
-	addList: function(text){
-		var data = this.state.listData;
-		data.push(text);
-
+	_deleteListItem: function(id){
 		this.setState({
-			listData: data
+			dataList: this.state.dataList.filter(function(list){
+				return list.id !== id;
+			})
+		});
+	},
+
+	_onSubmit: function(textValue){
+		var data = this.state.dataList;
+		var num = this.state.idNum;
+
+		data.push({
+			id: num,
+			text: textValue
+		});
+
+		// id をインクリメントしてセット
+		this.setState({
+			dataList: data,
+			idNum: num + 1
 		});
 	},
 
 	render: function() {
-
-		// var list_wrap;
-		//
-		// if(this.state.listData.length > 0){
-		// 	list_wrap = <List list_data={this.state.listData} />;
-		// } else {
-		// 	list_wrap = '';
-		// }
-
 		return (
 			React.createElement("div", null, 
-			React.createElement(InputText, {onSubmit: this.addList}), 
-			React.createElement(List, null)
+			React.createElement(InputText, {on_submit: this._onSubmit}), 
+			React.createElement(List, {data_list: this.state.dataList, delete_list_item: this._deleteListItem})
 			)
 		);
 	}
@@ -19191,4 +19214,4 @@ var Todo = React.createClass({displayName: "Todo",
 
 module.exports = Todo;
 
-},{"./InputText.jsx":160,"./List.jsx":161,"react":157}]},{},[158]);
+},{"./InputText.jsx":160,"./List.jsx":161,"react":157,"react-dom":29}]},{},[158]);
