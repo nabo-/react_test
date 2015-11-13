@@ -19622,92 +19622,92 @@ module.exports = validateDOMNesting;
 module.exports = require('./lib/React');
 
 },{"./lib/React":58}],163:[function(require,module,exports){
+var Dispatcher = require('../dispatcher/AppDispatcher.jsx');
+
+var AppAction = {
+	sendText: function(text){
+		Dispatcher.viewAction(text);
+	}
+};
+
+module.exports = AppAction;
+
+},{"../dispatcher/AppDispatcher.jsx":168}],164:[function(require,module,exports){
 /*
 sample URL
 http://mae.chab.in/archives/2747
 */
-var Dispatcher = require("flux").Dispatcher;
-var EventEmitter = require("events").EventEmitter;
-var assign = require("object-assign");
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+var App = require('./components/App.jsx');
 
-var testDispatcher = new Dispatcher();
+ReactDOM.render(
+	React.createElement(App, null),
+	document.getElementById('content')
+	);
 
+},{"./components/App.jsx":165,"react":162,"react-dom":34}],165:[function(require,module,exports){
+var React = require('react');
+var ReactDOM = require('react-dom');
 
-var CHANGE_EVENT = "change";
-var testConstants = {
-	TEST: "test"
-};
+var AppStore = require('../store/AppStore.jsx');
 
-// Action
-var TestAction = {
-	test: function (val) {
-		testDispatcher.dispatch({
-			actionType: testConstants.TEST,
-			value: val
-		});
-	}
-};
+var Form = require('./Form.jsx');
+var Display = require('./Display.jsx');
 
-
-// Store
-var _test = {value: null};
-
-var TestStore = assign({}, EventEmitter.prototype, {
-	getAll: function(){
-		return _test;
-	},
-	emmitChange: function(){
-		this.emmit(CHANGE_EVENT);
-	},
-	addChangeListener: function(callback){
-		this.on(CHANGE_EVENT, callback);
-	},
-	dispatcherIndex: testDispatcher.register(function(payload){
-		if(payload.actiontype === testConstants.TEST){
-			_test.value = payload.value;
-			TestStore.emmitChnage();
-		}
-	})
-});
-
-
-
-// View
 var App = React.createClass({displayName: "App",
 
 	getInitialState: function(){
-		return TestStore.getAll();
+		return AppStore.getAll();
 	},
 	componentDidMount: function() {
-		var self = this;
-		TestStore.addChangeListener(function () {
-			self.setState(TestStore.getAll());
+		var _this = this;
+		AppStore.addChangeListener(function () {
+			_this.setState(AppStore.getAll());
 		});
     },
 	render: function() {
 		return (
 			React.createElement("div", {className: "testApp"}, 
-				React.createElement(TestForm, null), 
-				React.createElement(TestDisplay, {data: this.state.value})
+				React.createElement(Form, null), 
+				React.createElement(Display, {data: this.state.value})
 			)
 		);
 	}
-
 });
 
+module.exports = App;
 
-var TestForm = React.createClass({displayName: "TestForm",
+},{"../store/AppStore.jsx":169,"./Display.jsx":166,"./Form.jsx":167,"react":162,"react-dom":34}],166:[function(require,module,exports){
+var React = require('react');
+
+var Display = React.createClass({displayName: "Display",
+	render: function () {
+		var message = this.props.data;
+		return (
+			React.createElement("div", null, message)
+		);
+	}
+});
+
+module.exports = Display;
+
+},{"react":162}],167:[function(require,module,exports){
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var AppAction = require('../action/AppAction.jsx');
+
+var Form = React.createClass({displayName: "Form",
 	send: function (e) {
 		e.preventDefault();
 		var val = ReactDOM.findDOMNode(this.refs.val).value.trim();
-		TestAction.test(val);
+		AppAction.sendText(val);
 		ReactDOM.findDOMNode(this.refs.val).value = "";
 		return;
 	},
-	render: function () {
+	render: function(){
 		return (
 			React.createElement("form", null, 
 			React.createElement("input", {type: "text", ref: "val"}), 
@@ -19717,20 +19717,51 @@ var TestForm = React.createClass({displayName: "TestForm",
 	}
 });
 
-var TestDisplay = React.createClass({displayName: "TestDisplay",
-	render: function () {
-		var message = this.props.data;
-		return (
-			React.createElement("div", null, message)
-		);
+module.exports = Form;
+
+},{"../action/AppAction.jsx":163,"react":162,"react-dom":34}],168:[function(require,module,exports){
+var Dispatcher = require("flux").Dispatcher;
+var assign = require("object-assign");
+
+var AppDispatcher = assign(new Dispatcher(), {
+	viewAction: function(val){
+		this.dispatch({
+			actionType: 'test',
+			value: val
+		});
 	}
 });
 
+module.exports = AppDispatcher;
+
+},{"flux":29,"object-assign":32}],169:[function(require,module,exports){
+var Dispatcher = require('../dispatcher/AppDispatcher.jsx');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
 
 
-ReactDOM.render(
-	React.createElement(App, null),
-	document.getElementById('content')
-	);
+var _test = {value: null};
 
-},{"events":1,"flux":29,"object-assign":32,"react":162,"react-dom":34}]},{},[163]);
+
+var AppStore = assign({}, EventEmitter.prototype, {
+	getAll: function(){
+		return _test;
+	},
+	emmitChange: function(){
+		this.emmit('change');
+	},
+	addChangeListener: function(callback){
+		this.on('change', callback);
+	},
+
+	dispatcherIndex: Dispatcher.register(function(payload){
+		if(payload.actiontype === 'test'){
+			_test.value = payload.value;
+			AppStore.emmitChange();
+		}
+	})
+});
+
+module.exports = AppStore;
+
+},{"../dispatcher/AppDispatcher.jsx":168,"events":1,"object-assign":32}]},{},[164]);
