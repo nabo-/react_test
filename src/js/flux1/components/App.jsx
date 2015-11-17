@@ -9,11 +9,15 @@ var Display = require('./Display.jsx');
 var App = React.createClass({
 
 	getInitialState: function(){
+		// value: null
 		return AppStore.getAll();
 	},
 	componentDidMount: function() {
 		var _this = this;
+		console.log('2: view App.componentDidMount');
+		
 		AppStore.addChangeListener(function () {
+			console.log('10: view App.componentDidMount');
 			_this.setState(AppStore.getAll());
 		});
     },

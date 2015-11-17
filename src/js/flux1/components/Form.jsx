@@ -5,6 +5,7 @@ var AppAction = require('../action/AppAction.jsx');
 
 var Form = React.createClass({
 	send: function (e) {
+		console.log('4: Form');
 		e.preventDefault();
 		var val = ReactDOM.findDOMNode(this.refs.val).value.trim();
 		AppAction.sendText(val);

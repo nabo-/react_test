@@ -37,7 +37,7 @@
   },
   "browserify": {
     "transform": [
-      "reactify"
+		["reactify", {"harmony": true}]
     ]
   }
 }

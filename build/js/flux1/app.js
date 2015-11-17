@@ -19626,6 +19626,7 @@ var Dispatcher = require('../dispatcher/AppDispatcher.jsx');
 
 var AppAction = {
 	sendText: function(text){
+		console.log('5: AppAction.sendText');
 		Dispatcher.viewAction(text);
 	}
 };
@@ -19659,11 +19660,15 @@ var Display = require('./Display.jsx');
 var App = React.createClass({displayName: "App",
 
 	getInitialState: function(){
+		// value: null
 		return AppStore.getAll();
 	},
 	componentDidMount: function() {
 		var _this = this;
+		console.log('2: view App.componentDidMount');
+		
 		AppStore.addChangeListener(function () {
+			console.log('10: view App.componentDidMount');
 			_this.setState(AppStore.getAll());
 		});
     },
@@ -19701,6 +19706,7 @@ var AppAction = require('../action/AppAction.jsx');
 
 var Form = React.createClass({displayName: "Form",
 	send: function (e) {
+		console.log('4: Form');
 		e.preventDefault();
 		var val = ReactDOM.findDOMNode(this.refs.val).value.trim();
 		AppAction.sendText(val);
@@ -19725,6 +19731,9 @@ var assign = require("object-assign");
 
 var AppDispatcher = assign(new Dispatcher(), {
 	viewAction: function(val){
+
+		console.log('6: AppDispatcher.viewAction');
+
 		this.dispatch({
 			actionType: 'test',
 			value: val
@@ -19745,19 +19754,25 @@ var _test = {value: null};
 
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function(){
+		console.log('1: AppStore.getAll');
 		return _test;
 	},
-	emmitChange: function(){
-		this.emmit('change');
+	emitChange: function(){
+		console.log('9: AppStore.emitChange');
+		this.emit('change');
 	},
 	addChangeListener: function(callback){
+		console.log('3: AppStore.addChangeListener');
 		this.on('change', callback);
 	},
 
 	dispatcherIndex: Dispatcher.register(function(payload){
-		if(payload.actiontype === 'test'){
+		console.log('7: AppStore.dispatcherIndex');
+		if(payload.actionType === 'test'){
 			_test.value = payload.value;
-			AppStore.emmitChange();
+
+			console.log('8: AppStore.dispatcherIndex value :' + _test.value);
+			AppStore.emitChange();
 		}
 	})
 });

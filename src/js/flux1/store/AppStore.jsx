@@ -8,19 +8,25 @@ var _test = {value: null};
 
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function(){
+		console.log('1: AppStore.getAll');
 		return _test;
 	},
-	emmitChange: function(){
-		this.emmit('change');
+	emitChange: function(){
+		console.log('9: AppStore.emitChange');
+		this.emit('change');
 	},
 	addChangeListener: function(callback){
+		console.log('3: AppStore.addChangeListener');
 		this.on('change', callback);
 	},
 
 	dispatcherIndex: Dispatcher.register(function(payload){
-		if(payload.actiontype === 'test'){
+		console.log('7: AppStore.dispatcherIndex');
+		if(payload.actionType === 'test'){
 			_test.value = payload.value;
-			AppStore.emmitChange();
+
+			console.log('8: AppStore.dispatcherIndex value :' + _test.value);
+			AppStore.emitChange();
 		}
 	})
 });
