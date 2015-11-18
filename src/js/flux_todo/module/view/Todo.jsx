@@ -1,6 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var PropTypes = React.PropTypes;
+
+var Store = require('../store/Store.jsx');
 
 var InputText = require('./InputText.jsx');
 var List = require('./List.jsx');
@@ -9,41 +10,23 @@ var List = require('./List.jsx');
 var Todo = React.createClass({
 
 	getInitialState: function(){
-		return {
-			dataList: [],
-			idNum: 0
-		};
+		return Store.getAll();
 	},
 
-	_deleteListItem: function(id){
-		this.setState({
-			dataList: this.state.dataList.filter(function(list){
-				return list.id !== id;
-			})
-		});
-	},
+	// レンダリングされたらこいつらを初期設定
+	componentDidMount: function(){
+		var _this = this;
 
-	_onSubmit: function(textValue){
-		var data = this.state.dataList;
-		var num = this.state.idNum;
-
-		data.push({
-			id: num,
-			text: textValue
-		});
-
-		// id をインクリメントしてセット
-		this.setState({
-			dataList: data,
-			idNum: num + 1
+		Store.addChangeListener(function(){
+			_this.setState(Store.getAll());
 		});
 	},
 
 	render: function() {
 		return (
 			<div>
-			<InputText on_submit={this._onSubmit}/>
-			<List data_list={this.state.dataList} delete_list_item={this._deleteListItem}/>
+			<InputText />
+			<List data_list={this.state.dataList} />
 			</div>
 		);
 	}

@@ -1,23 +1,23 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var PropTypes = React.PropTypes;
+
+var Action = require('../action/Action.jsx');
 
 var InputText = React.createClass({
 
-	PropTypes: {
-		text_value: PropTypes.string.isRequired,
-		on_submit: PropTypes.func.isRequired
-	},
-
-	_onSubmit: function(){
+	_onSubmit: function(event){
+		event.preventDefault();
 		var text = ReactDOM.findDOMNode(this.refs.text).value.trim();
 
 		if(!text){
 			return;
 		}
-		this.props.on_submit(text);
+
+		// Action にイベント通知
+		Action.on_add_submit(text);
 
 		ReactDOM.findDOMNode(this.refs.text).value = '';
+		return;
 	},
 
 	render: function() {
