@@ -33,7 +33,8 @@ var Store = assign({}, EventEmitter.prototype, {
 			var num = data_state.count;
 
 			data.push({
-				text: payload.value,
+				text: payload.value.task,
+				date: payload.value.do_date,
 				id: num
 			});
 

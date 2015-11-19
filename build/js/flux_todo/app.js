@@ -19638,11 +19638,11 @@ var Dispatcher = require('../dispatcher/Dispatcher.jsx');
 // view から受け取るアクションたち
 var Action = {
 
-	on_add_submit: function(text){
+	on_add_submit: function(data){
 		// Dispather を通じて変更部分を通知
 		Dispatcher.dispatch({
 			actionType: 'add_text',
-			value: text
+			value: data
 		});
 	},
 
@@ -19697,7 +19697,8 @@ var Store = assign({}, EventEmitter.prototype, {
 			var num = data_state.count;
 
 			data.push({
-				text: payload.value,
+				text: payload.value.task,
+				date: payload.value.do_date,
 				id: num
 			});
 
@@ -19733,13 +19734,19 @@ var InputText = React.createClass({displayName: "InputText",
 	_onSubmit: function(event){
 		event.preventDefault();
 		var text = ReactDOM.findDOMNode(this.refs.text).value.trim();
+		var date = ReactDOM.findDOMNode(this.refs.date).value.trim();
 
-		if(!text){
+		if(!text || !date){
 			return;
 		}
 
+		var submit_data = {
+			task: text,
+			do_date: date
+		};
+
 		// Action にイベント通知
-		Action.on_add_submit(text);
+		Action.on_add_submit(submit_data);
 
 		ReactDOM.findDOMNode(this.refs.text).value = '';
 		return;
@@ -19748,6 +19755,9 @@ var InputText = React.createClass({displayName: "InputText",
 	render: function() {
 		return (
 			React.createElement("div", {className: "inputBar"}, 
+				React.createElement("div", {className: "inputBar__left"}, 
+					React.createElement("input", {type: "date", name: "", className: "inputBar__input", ref: "date"})
+				), 
 				React.createElement("div", {className: "inputBar__body"}, 
 					React.createElement("input", {type: "text", placeholder: "テキストを入力", className: "inputBar__input", ref: "text"})
 				), 
@@ -19774,7 +19784,8 @@ var List = React.createClass({displayName: "List",
 	PropTypes: {
 		data_list: PropTypes.shape({
 			id: PropTypes.number.isRequired,
-			text: PropTypes.string.isRequired
+			text: PropTypes.string.isRequired,
+			date: PropTypes.string.isRequired
 		})
 	},
 
@@ -19784,7 +19795,7 @@ var List = React.createClass({displayName: "List",
 		var lists = this.props.data_list.map(function(list, index){
 
 			return (
-				React.createElement(ListItem, {text: list.text, id: list.id, key: list.id})
+				React.createElement(ListItem, {text: list.text, date: list.date, id: list.id, key: list.id})
 			);
 		});
 
@@ -19822,6 +19833,7 @@ var ListItem = React.createClass({displayName: "ListItem",
 
 	PropTypes: {
 		text: PropTypes.string.isRequired,
+		date: PropTypes.string.isRequired,
 		id: PropTypes.number.isRequired
 	},
 
@@ -19836,7 +19848,12 @@ var ListItem = React.createClass({displayName: "ListItem",
 		return (
 			React.createElement("li", {className: "addList__item"}, 
 				React.createElement("div", {className: "addList__layout"}, 
-					React.createElement("div", null, React.createElement("p", null, this.props.text)), 
+					React.createElement("div", null, 
+						React.createElement("p", null, this.props.date)
+					), 
+					React.createElement("div", null, 
+						React.createElement("p", null, this.props.text)
+					), 
 					React.createElement("div", null, React.createElement("button", {onClick: this._onDeleteList}, "Delete"))
 				)
 			)
@@ -19860,15 +19877,20 @@ var List = require('./List.jsx');
 var Todo = React.createClass({displayName: "Todo",
 
 	getInitialState: function(){
-		return Store.getAll();
+		return {
+			tracks: Store.getAll()
+		};
 	},
 
 	// レンダリングされたらこいつらを初期設定
 	componentDidMount: function(){
 		var _this = this;
+		Store.addChangeListener(this._onChange);
+	},
 
-		Store.addChangeListener(function(){
-			_this.setState(Store.getAll());
+	_onChange: function(){
+		this.setState({
+			tracks: Store.getAll()
 		});
 	},
 
@@ -19876,7 +19898,7 @@ var Todo = React.createClass({displayName: "Todo",
 		return (
 			React.createElement("div", null, 
 			React.createElement(InputText, null), 
-			React.createElement(List, {data_list: this.state.dataList})
+			React.createElement(List, {data_list: this.state.tracks.dataList})
 			)
 		);
 	}

@@ -9,7 +9,8 @@ var List = React.createClass({
 	PropTypes: {
 		data_list: PropTypes.shape({
 			id: PropTypes.number.isRequired,
-			text: PropTypes.string.isRequired
+			text: PropTypes.string.isRequired,
+			date: PropTypes.string.isRequired
 		})
 	},
 
@@ -19,7 +20,7 @@ var List = React.createClass({
 		var lists = this.props.data_list.map(function(list, index){
 
 			return (
-				<ListItem text={list.text} id={list.id} key={list.id}/>
+				<ListItem text={list.text} date={list.date} id={list.id} key={list.id}/>
 			);
 		});
 

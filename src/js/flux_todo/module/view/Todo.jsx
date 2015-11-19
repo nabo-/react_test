@@ -10,15 +10,20 @@ var List = require('./List.jsx');
 var Todo = React.createClass({
 
 	getInitialState: function(){
-		return Store.getAll();
+		return {
+			tracks: Store.getAll()
+		};
 	},
 
 	// レンダリングされたらこいつらを初期設定
 	componentDidMount: function(){
 		var _this = this;
+		Store.addChangeListener(this._onChange);
+	},
 
-		Store.addChangeListener(function(){
-			_this.setState(Store.getAll());
+	_onChange: function(){
+		this.setState({
+			tracks: Store.getAll()
 		});
 	},
 
@@ -26,7 +31,7 @@ var Todo = React.createClass({
 		return (
 			<div>
 			<InputText />
-			<List data_list={this.state.dataList} />
+			<List data_list={this.state.tracks.dataList} />
 			</div>
 		);
 	}

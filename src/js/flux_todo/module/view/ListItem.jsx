@@ -8,6 +8,7 @@ var ListItem = React.createClass({
 
 	PropTypes: {
 		text: PropTypes.string.isRequired,
+		date: PropTypes.string.isRequired,
 		id: PropTypes.number.isRequired
 	},
 
@@ -22,7 +23,12 @@ var ListItem = React.createClass({
 		return (
 			<li className="addList__item">
 				<div className="addList__layout">
-					<div><p>{this.props.text}</p></div>
+					<div>
+						<p>{this.props.date}</p>
+					</div>
+					<div>
+						<p>{this.props.text}</p>
+					</div>
 					<div><button onClick={this._onDeleteList}>Delete</button></div>
 				</div>
 			</li>
