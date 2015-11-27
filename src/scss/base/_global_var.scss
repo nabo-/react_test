@@ -3,9 +3,11 @@
 $base-font-size: 12px;
 
 // text color
-$color-default: #333;
+$color-strong: #333;
 
-$color-fine: #666;
+$color-default: #666;
+
+$color-fine: #999;
 
 $color-link: #09598d;
 
@@ -15,7 +17,13 @@ $color-new: #e91e63;
 
 $color-white: #fff;
 
+$color-disable: #e6e6e6;
+
+$color-active: #f58d45;
+
 // font size (rem)
+$size-huge: 1.333rem; //16px
+
 $size-big: 1.250rem; //15px
 
 $size-major: 1.167rem; //14px
@@ -29,3 +37,6 @@ $size-small: 0.750rem; //9px
 
 // border color
 $border-color-default: #e5e5e5;
+
+// arrow color
+$arrow-color-gray: #7f7f7f; // base

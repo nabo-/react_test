@@ -20,6 +20,7 @@ module.exports = function (grunt) {
 			tmp: 'tmp',
 			html_src: 'src/html',
 			scss_src: 'src/scss',
+			img_src: 'src/img',
 			js_src: 'src/js'
 		},
 
@@ -72,6 +73,18 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+
+		imagemin: {
+			noraml: {
+				files: [{
+					expand: true,
+					cwd: '<%= path.img_src %>',
+					src: ['*.{png,jpg}'],
+					dest: '<%= path.build %>/img/'
+				}]
+			}
+		},
+
 		browserify: {
 			dist: {
 				files: {
@@ -82,7 +95,8 @@ module.exports = function (grunt) {
 					'<%= path.build %>/js/form2/app.js': '<%= path.js_src %>/form2/app.js',
 					'<%= path.build %>/js/todo/app.js': '<%= path.js_src %>/todo/app.js',
 					'<%= path.build %>/js/flux1/app.js': '<%= path.js_src %>/flux1/app.js',
-					'<%= path.build %>/js/flux_todo/app.js': '<%= path.js_src %>/flux_todo/app.js'
+					'<%= path.build %>/js/flux_todo/app.js': '<%= path.js_src %>/flux_todo/app.js',
+					'<%= path.build %>/js/flux_map/app.js': '<%= path.js_src %>/flux_map/app.js'
 				}
 			}
 		},
@@ -132,8 +146,9 @@ module.exports = function (grunt) {
 	grunt.registerTask('build:html', ['assemble']);
 	grunt.registerTask('build:css', ['sass', 'autoprefixer', 'csso']);
 	grunt.registerTask('build:js', ['browserify']);
+	grunt.registerTask('build:img', ['imagemin']);
 
-	grunt.registerTask('build', ['build:html', 'build:css', 'build:js', 'clean']);
+	grunt.registerTask('build', ['build:html', 'build:css', 'build:js', 'build:img', 'clean']);
 
 	grunt.registerTask('live', ['connect', 'watch']);
 
