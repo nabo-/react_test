@@ -8,8 +8,8 @@ var RestaurantList = React.createClass({
 
 	PropTypes: {
 		data_list: PropTypes.shape({
-			latitude: PropTypes.number.isRequired,
-			longitude: PropTypes.number.isRequired,
+			latitude: PropTypes.string.isRequired,
+			longitude: PropTypes.string.isRequired,
 			name: PropTypes.string.isRequired,
 			address: PropTypes.string.isRequired,
 			photo: PropTypes.string.isRequired,
@@ -18,10 +18,16 @@ var RestaurantList = React.createClass({
 	},
 
 	render: function() {
+		console.log('RestaurantList render #5 #14');
 		var _this = this;
 		var lists = this.props.data_list.map(function(list, index){
+
+			if(typeof list.image_url.shop_image1 === 'object'){
+				list.image_url.shop_image1 = 'http://r.gnst.jp/search/img/noimg.png';
+			}
+
 			return (
-				<ListItem lat={list.latitude} lon={list.longitude} name={list.name} address={list.address} photo={list.photo} url={list.url} id={index} key={index} />
+				<ListItem lat={list.latitude} lon={list.longitude} name={list.name} address={list.address} photo={list.image_url.shop_image1} url={list.url} id={index} key={index} />
 			);
 		});
 

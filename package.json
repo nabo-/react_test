@@ -10,7 +10,9 @@
     "prettify": "^0.1.7",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
-    "superagent": "^1.4.0"
+    "superagent": "^1.4.0",
+    "superagent-jsonp": "0.0.6",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "grunt": "~0.4.3",
@@ -37,7 +39,12 @@
   },
   "browserify": {
     "transform": [
-		["reactify", {"harmony": true}]
+      [
+        "reactify",
+        {
+          "harmony": true
+        }
+      ]
     ]
   }
 }
