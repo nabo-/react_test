@@ -12,35 +12,30 @@ var data_state = {
 var ListStore = assign({}, EventEmitter.prototype, {
 
 	getListAll: function(){
-		console.log('ListStore getListAll #2 #13');
+		console.log('Store / ListStore getListAll #6');
 		return data_state.restaurant_list;
 	},
 	emitChange: function(){
-		console.log('ListStore emitChangeList #11');
+		console.log('Store / ListStore emitChangeList #21');
 		this.emit(CHANGE_EVENT_LIST);
 	},
 	// dataの変更を受け取ったら実行
 	addChangeListener: function(callback){
-		console.log('ListStore addChangeListener #9');
+		console.log('Store / ListStore addChangeListener #11');
 		this.on(CHANGE_EVENT_LIST, callback);
 	},
 
 	// dispatcher 処理登録
 	dispatchToken: Dispatcher.register(function(payload){
-		console.log('ListStore dispatchToken #10');
-		switch (payload.actionType){
+		console.log('Store / ListStore dispatchToken #15 #20');
 
-			case 'rerender':
-				// 初期化
-				data_state.restaurant_list = [];
-				data_state.restaurant_list = payload.value;
+		if(payload.actionType === 'rerender'){
+			// 初期化
+			data_state.restaurant_list = [];
+			data_state.restaurant_list = payload.value;
 
-				// 変更を通知
-				ListStore.emitChange();
-				break;
-
-			default:
-				break;
+			// 変更を通知
+			ListStore.emitChange();
 		}
 	})
 });

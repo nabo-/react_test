@@ -21041,7 +21041,7 @@ ReactDOM.render(
 	document.getElementById('contents')
 	);
 
-},{"./module/view/SearchMap.jsx":175,"react":163,"react-dom":35}],168:[function(require,module,exports){
+},{"./module/view/SearchMap.jsx":176,"react":163,"react-dom":35}],168:[function(require,module,exports){
 var Dispatcher = require('../dispatcher/Dispatcher.jsx');
 var request = require('superagent');
 var jsonp = require("superagent-jsonp");
@@ -21049,8 +21049,28 @@ var jsonp = require("superagent-jsonp");
 // view から受け取るアクションたち
 var Action = {
 
+	paramChange: function(data){
+		console.log('Action / paramChange #14');
+		var param_data = {};
+
+		if(typeof data.latitude !== 'undefined'){
+			param_data.latitude = data.latitude;
+		}
+		if(typeof data.longitude !== 'undefined'){
+			param_data.longitude = data.longitude;
+		}
+		if(typeof data.zoomLevel !== 'undefined'){
+			param_data.zoomLevel = data.zoomLevel;
+		}
+
+		Dispatcher.dispatch({
+			actionType: 'change_param',
+			value: param_data
+		});
+	},
+
 	restaurantAPIRequest: function(options){
-		console.log('Action restaurantAPIRequest #7');
+		console.log('Action / restaurantAPIRequest #12');
 		var API_URL = 'http://api.gnavi.co.jp/RestSearchAPI/20150630/';
 		var API_KEY = '94d8b18e38bcf587805c80d486b40b85';
 		var res_data;
@@ -21068,6 +21088,14 @@ var Action = {
 			})
 			.use(jsonp)
 			.end(function(err, res){
+				console.log('レストランAPIから返ってきた');
+
+				if(res.error){
+					alert('エラーです');
+
+					return;
+				}
+
 				res_data = res.body.rest;
 
 				Dispatcher.dispatch({
@@ -21078,7 +21106,7 @@ var Action = {
 	},
 
 	changeMapCenterPosition: function(data){
-		console.log('Action changeMapCenterPosition');
+		console.log('Action / changeMapCenterPosition #10');
 
 		Dispatcher.dispatch({
 			actionType: 'map_center_change',
@@ -21109,35 +21137,30 @@ var data_state = {
 var ListStore = assign({}, EventEmitter.prototype, {
 
 	getListAll: function(){
-		console.log('ListStore getListAll #2 #13');
+		console.log('Store / ListStore getListAll #6');
 		return data_state.restaurant_list;
 	},
 	emitChange: function(){
-		console.log('ListStore emitChangeList #11');
+		console.log('Store / ListStore emitChangeList #21');
 		this.emit(CHANGE_EVENT_LIST);
 	},
 	// dataの変更を受け取ったら実行
 	addChangeListener: function(callback){
-		console.log('ListStore addChangeListener #9');
+		console.log('Store / ListStore addChangeListener #11');
 		this.on(CHANGE_EVENT_LIST, callback);
 	},
 
 	// dispatcher 処理登録
 	dispatchToken: Dispatcher.register(function(payload){
-		console.log('ListStore dispatchToken #10');
-		switch (payload.actionType){
+		console.log('Store / ListStore dispatchToken #15 #20');
 
-			case 'rerender':
-				// 初期化
-				data_state.restaurant_list = [];
-				data_state.restaurant_list = payload.value;
+		if(payload.actionType === 'rerender'){
+			// 初期化
+			data_state.restaurant_list = [];
+			data_state.restaurant_list = payload.value;
 
-				// 変更を通知
-				ListStore.emitChange();
-				break;
-
-			default:
-				break;
+			// 変更を通知
+			ListStore.emitChange();
 		}
 	})
 });
@@ -21162,29 +21185,25 @@ var data_state = {
 
 var MapStore = assign({}, EventEmitter.prototype, {
 	getMapAll: function(){
-		console.log('MapStore getMapAll #3');
+		console.log('Store / MapStore getMapAll #4');
 		return data_state.map_data;
 	},
 	emitChange: function(){
-		console.log('MapStore emitChangeMap');
+		console.log('Store / MapStore emitChangeMap #12');
 		this.emit(CHANGE_EVENT_MAP);
 	},
 	// 地図データの変更があった
 	addChangeListener: function(callback){
-		console.log('MapStore addChangeMapListener');
+		console.log('Store / MapStore addChangeMapListener #9');
 		this.on(CHANGE_EVENT_MAP, callback);
 	},
 	// dispatcher 処理登録
 	dispatchToken: Dispatcher.register(function(payload){
-		console.log('MapStore dispatchToken #10');
-		switch (payload.actionType){
+		console.log('Store / MapStore dispatchToken #18');
 
-			case 'map_center_change':
-				data_state.map_data = payload.value;
-				MapStore.emitChange();
-				break;
-			default:
-				break;
+		if(payload.actionType === 'map_center_change'){
+			data_state.map_data = payload.value;
+			MapStore.emitChange();
 		}
 	})
 });
@@ -21192,15 +21211,84 @@ var MapStore = assign({}, EventEmitter.prototype, {
 module.exports = MapStore;
 
 },{"../dispatcher/Dispatcher.jsx":169,"events":2,"object-assign":33}],172:[function(require,module,exports){
+var Dispatcher = require('../dispatcher/Dispatcher.jsx');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
+
+var CHANGE_EVENT_LIST = 'change';
+
+// データ
+var data_state = {
+	param_data: {
+		latitude: 35.690921,
+		longitude: 139.70025799999996,
+		zoomLevel: 17
+	}
+};
+
+var SearchMapStore = assign({}, EventEmitter.prototype, {
+
+	getParamData: function(){
+		console.log('Store / SearchMapStore getHashData');
+		return data_state.param_data;
+	},
+
+	emitChange: function(){
+		console.log('Store / SearchMapStore emitChangeList #17');
+		this.emit(CHANGE_EVENT_LIST);
+	},
+	// dataの変更を受け取ったら実行
+	addChangeListener: function(callback){
+		console.log('Store / SearchMapStore addChangeListener #19');
+		this.on(CHANGE_EVENT_LIST, callback);
+	},
+
+	// dispatcher 処理登録
+	dispatchToken: Dispatcher.register(function(payload){
+		console.log('Store / SearchMapStore dispatchToken #16');
+
+		if(payload.actionType === 'change_param'){
+			console.log('change_param');
+			data_state.param_data = payload.value;
+
+			// 変更を通知
+			SearchMapStore.emitChange();
+		}
+	})
+});
+//
+//
+//
+//
+// CityStore.dispatchToken = flightDispatcher.register(function(payload) {
+//   if (payload.actionType === 'country-update') {
+//     // `CountryStore.country` may not be updated.
+//     flightDispatcher.waitFor([CountryStore.dispatchToken]);
+//     // `CountryStore.country` is now guaranteed to be updated.
+//
+//     // Select the default city for the new country
+//     CityStore.city = getDefaultCityForCountry(CountryStore.country);
+//   }
+// });
+
+module.exports = SearchMapStore;
+
+},{"../dispatcher/Dispatcher.jsx":169,"events":2,"object-assign":33}],173:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Action = require('../action/Action.jsx');
-var PropTypes = React.PropTypes;
 var MapStore = require('../store/MapStore.jsx');
+
+var PropTypes = React.PropTypes;
+
 var GoogleMap = React.createClass({displayName: "GoogleMap",
 
+	PropTypes: {
+		onchangeMapPosition: PropTypes.func.isRequired
+	},
+
 	getInitialState: function(){
-		console.log('GoogleMap getInitialState #4');
+		console.log('View / GoogleMap getInitialState #3');
 		return {
 			map: null,
 			map_data: MapStore.getMapAll(),
@@ -21210,8 +21298,8 @@ var GoogleMap = React.createClass({displayName: "GoogleMap",
 
 	componentDidMount: function(){
 
-		console.log('GoogleMap componentDidMount #6');
-		MapStore.addChangeListener(this._onChageMapPosition);
+		console.log('View / GoogleMap componentDidMount #8');
+		MapStore.addChangeListener(this._onChangeMapPosition);
 
 		// ReactDOM.findDOMNode(component) で  DOMアクセスできる
 		var gMap = new google.maps.Map(ReactDOM.findDOMNode(this), {
@@ -21241,11 +21329,14 @@ var GoogleMap = React.createClass({displayName: "GoogleMap",
 		});
 	},
 
-	_onChageMapPosition: function(){
-		console.log('GoogleMap onchangeMapPosition');
+	_onChangeMapPosition: function(){
+		console.log('View / GoogleMap onchangeMapPosition #13');
 		this.setState({
 			map_data: MapStore.getMapAll()
 		});
+
+		console.log('親へ座標をおくりまーす');
+		this.props.onchangeMapPosition(this.state.map_data);
 	},
 
 	render: function() {
@@ -21259,7 +21350,7 @@ var GoogleMap = React.createClass({displayName: "GoogleMap",
 
 module.exports = GoogleMap;
 
-},{"../action/Action.jsx":168,"../store/MapStore.jsx":171,"react":163,"react-dom":35}],173:[function(require,module,exports){
+},{"../action/Action.jsx":168,"../store/MapStore.jsx":171,"react":163,"react-dom":35}],174:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var PropTypes = React.PropTypes;
@@ -21277,7 +21368,7 @@ var ListItem = React.createClass({displayName: "ListItem",
 	},
 
 	render: function() {
-		console.log('ListItem render #15');
+		console.log('View / ListItem レンダリング');
 		return (
 			React.createElement("li", {className: "l-list__item", "data-num": this.props.id}, 
 				React.createElement("a", {href: this.props.url, className: "l-list__layout"}, 
@@ -21301,9 +21392,11 @@ var ListItem = React.createClass({displayName: "ListItem",
 
 module.exports = ListItem;
 
-},{"react":163,"react-dom":35}],174:[function(require,module,exports){
+},{"react":163,"react-dom":35}],175:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
+var Action = require('../action/Action.jsx');
+var ListStore = require('../store/ListStore.jsx');
 var ListItem = require('./ListItem.jsx');
 
 var PropTypes = React.PropTypes;
@@ -21311,20 +21404,40 @@ var PropTypes = React.PropTypes;
 var RestaurantList = React.createClass({displayName: "RestaurantList",
 
 	PropTypes: {
-		data_list: PropTypes.shape({
-			latitude: PropTypes.string.isRequired,
-			longitude: PropTypes.string.isRequired,
-			name: PropTypes.string.isRequired,
-			address: PropTypes.string.isRequired,
-			photo: PropTypes.string.isRequired,
-			url: PropTypes.string.isRequired
-		})
+		requestParams: {
+			latitude: PropTypes.number.isRequired,
+			longitude: PropTypes.number.isRequired,
+			zoomLevel: PropTypes.number.isRequired
+		},
+
+	},
+
+	getInitialState: function(){
+		console.log('View / RestaurantList getInitialState #5');
+
+		return {
+			restaurant_data: ListStore.getListAll()
+		};
+	},
+
+	componentDidMount: function(){
+		console.log('View / RestaurantList componentDidMount #10');
+
+		ListStore.addChangeListener(this._onChangeRestaurantData);
+	},
+
+	_onChangeRestaurantData: function(){
+		console.log('View / RestaurantList _onChangeRestaurantData #22');
+		this.setState({
+			restaurant_data: ListStore.getListAll()
+		});
 	},
 
 	render: function() {
-		console.log('RestaurantList render #5 #14');
+		console.log('View / RestaurantList render #7');
+
 		var _this = this;
-		var lists = this.props.data_list.map(function(list, index){
+		var lists = this.state.restaurant_data.map(function(list, index){
 
 			if(typeof list.image_url.shop_image1 === 'object'){
 				list.image_url.shop_image1 = 'http://r.gnst.jp/search/img/noimg.png';
@@ -21357,45 +21470,52 @@ var RestaurantList = React.createClass({displayName: "RestaurantList",
 
 module.exports = RestaurantList;
 
-},{"./ListItem.jsx":173,"react":163,"react-dom":35}],175:[function(require,module,exports){
+},{"../action/Action.jsx":168,"../store/ListStore.jsx":170,"./ListItem.jsx":174,"react":163,"react-dom":35}],176:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
-var ListStore = require('../store/ListStore.jsx');
-// var MapStore = require('../store/MapStore.jsx');
+
+var SearchMapStore = require('../store/SearchMapStore.jsx');
 var RestaurantList = require('./RestaurantList.jsx');
 var GoogleMap = require('./GoogleMap.jsx');
-
+var Action = require('../action/Action.jsx');
 
 var SearchMap = React.createClass({displayName: "SearchMap",
 
 	getInitialState: function(){
-		console.log('searchMap getInitialState #1');
+		console.log('View / searchMap getInitialState #1');
 		return {
-			list_data: ListStore.getListAll()
+			requestParams: SearchMapStore.getParamData()
 		};
 	},
 
 	componentDidMount: function(){
-		console.log('searchMap componentDidMount #8');
-		var _this = this;
-		ListStore.addChangeListener(this._onChangeList);
+		console.log('View / searchMap componentDidMount #13');
+		SearchMapStore.addChangeListener(this._changeParam);
 	},
 
-	_onChangeList: function(){
-		console.log('searchMap _onChangeList #12');
+	_changeParam: function(){
+		console.log('View / searchMap _changeHash');
 		this.setState({
-			list_data: ListStore.getListAll()
+			requestParams: SearchMapStore.getParamData()
 		});
+		Action.restaurantAPIRequest(this.state.requestParams);
 	},
+
+	// googlemapの中心座標をMapコンポーネントから受け取って処理するもの
+	handleMapCenterPosition: function(map_data){
+		console.log(map_data);
+		Action.paramChange(map_data);
+	},
+
 	render: function(){
 
 		return (
 			React.createElement("div", {id: "wrapper"}, 
 				React.createElement("div", {id: "main"}, 
-					React.createElement(GoogleMap, null)
+					React.createElement(GoogleMap, {onchangeMapPosition: this.handleMapCenterPosition})
 				), 
 				React.createElement("div", {id: "sub"}, 
-					React.createElement(RestaurantList, {data_list: this.state.list_data})
+					React.createElement(RestaurantList, {requestParams: this.state.requestParams})
 				)
 			)
 		);
@@ -21405,4 +21525,4 @@ var SearchMap = React.createClass({displayName: "SearchMap",
 
 module.exports = SearchMap;
 
-},{"../store/ListStore.jsx":170,"./GoogleMap.jsx":172,"./RestaurantList.jsx":174,"react":163,"react-dom":35}]},{},[167]);
+},{"../action/Action.jsx":168,"../store/SearchMapStore.jsx":172,"./GoogleMap.jsx":173,"./RestaurantList.jsx":175,"react":163,"react-dom":35}]},{},[167]);

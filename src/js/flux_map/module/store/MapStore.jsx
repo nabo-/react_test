@@ -15,29 +15,25 @@ var data_state = {
 
 var MapStore = assign({}, EventEmitter.prototype, {
 	getMapAll: function(){
-		console.log('MapStore getMapAll #3');
+		console.log('Store / MapStore getMapAll #4');
 		return data_state.map_data;
 	},
 	emitChange: function(){
-		console.log('MapStore emitChangeMap');
+		console.log('Store / MapStore emitChangeMap #12');
 		this.emit(CHANGE_EVENT_MAP);
 	},
 	// 地図データの変更があった
 	addChangeListener: function(callback){
-		console.log('MapStore addChangeMapListener');
+		console.log('Store / MapStore addChangeMapListener #9');
 		this.on(CHANGE_EVENT_MAP, callback);
 	},
 	// dispatcher 処理登録
 	dispatchToken: Dispatcher.register(function(payload){
-		console.log('MapStore dispatchToken #10');
-		switch (payload.actionType){
+		console.log('Store / MapStore dispatchToken #18');
 
-			case 'map_center_change':
-				data_state.map_data = payload.value;
-				MapStore.emitChange();
-				break;
-			default:
-				break;
+		if(payload.actionType === 'map_center_change'){
+			data_state.map_data = payload.value;
+			MapStore.emitChange();
 		}
 	})
 });

@@ -1,41 +1,48 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var ListStore = require('../store/ListStore.jsx');
-// var MapStore = require('../store/MapStore.jsx');
+
+var SearchMapStore = require('../store/SearchMapStore.jsx');
 var RestaurantList = require('./RestaurantList.jsx');
 var GoogleMap = require('./GoogleMap.jsx');
-
+var Action = require('../action/Action.jsx');
 
 var SearchMap = React.createClass({
 
 	getInitialState: function(){
-		console.log('searchMap getInitialState #1');
+		console.log('View / searchMap getInitialState #1');
 		return {
-			list_data: ListStore.getListAll()
+			requestParams: SearchMapStore.getParamData()
 		};
 	},
 
 	componentDidMount: function(){
-		console.log('searchMap componentDidMount #8');
-		var _this = this;
-		ListStore.addChangeListener(this._onChangeList);
+		console.log('View / searchMap componentDidMount #13');
+		SearchMapStore.addChangeListener(this._changeParam);
 	},
 
-	_onChangeList: function(){
-		console.log('searchMap _onChangeList #12');
+	_changeParam: function(){
+		console.log('View / searchMap _changeHash');
 		this.setState({
-			list_data: ListStore.getListAll()
+			requestParams: SearchMapStore.getParamData()
 		});
+		Action.restaurantAPIRequest(this.state.requestParams);
 	},
+
+	// googlemapの中心座標をMapコンポーネントから受け取って処理するもの
+	handleMapCenterPosition: function(map_data){
+		console.log(map_data);
+		Action.paramChange(map_data);
+	},
+
 	render: function(){
 
 		return (
 			<div id="wrapper">
 				<div id="main">
-					<GoogleMap />
+					<GoogleMap onchangeMapPosition={this.handleMapCenterPosition} />
 				</div>
 				<div id="sub">
-					<RestaurantList data_list={this.state.list_data} />
+					<RestaurantList requestParams={this.state.requestParams} />
 				</div>
 			</div>
 		);
