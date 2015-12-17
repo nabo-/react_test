@@ -19,6 +19,8 @@ var Action = {
 			param_data.zoomLevel = data.zoomLevel;
 		}
 
+		console.log(Dispatcher);
+
 		Dispatcher.dispatch({
 			actionType: 'change_param',
 			value: param_data
@@ -54,6 +56,8 @@ var Action = {
 
 				res_data = res.body.rest;
 
+				console.log(Dispatcher);
+
 				Dispatcher.dispatch({
 					actionType: 'rerender',
 					value: res_data
@@ -63,6 +67,8 @@ var Action = {
 
 	changeMapCenterPosition: function(data){
 		console.log('Action / changeMapCenterPosition #10');
+
+		console.log(Dispatcher);
 
 		Dispatcher.dispatch({
 			actionType: 'map_center_change',

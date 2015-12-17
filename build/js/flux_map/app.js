@@ -21063,6 +21063,8 @@ var Action = {
 			param_data.zoomLevel = data.zoomLevel;
 		}
 
+		console.log(Dispatcher);
+
 		Dispatcher.dispatch({
 			actionType: 'change_param',
 			value: param_data
@@ -21098,6 +21100,8 @@ var Action = {
 
 				res_data = res.body.rest;
 
+				console.log(Dispatcher);
+
 				Dispatcher.dispatch({
 					actionType: 'rerender',
 					value: res_data
@@ -21107,6 +21111,8 @@ var Action = {
 
 	changeMapCenterPosition: function(data){
 		console.log('Action / changeMapCenterPosition #10');
+
+		console.log(Dispatcher);
 
 		Dispatcher.dispatch({
 			actionType: 'map_center_change',
@@ -21330,12 +21336,10 @@ var GoogleMap = React.createClass({displayName: "GoogleMap",
 	},
 
 	_onChangeMapPosition: function(){
-		console.log('View / GoogleMap onchangeMapPosition #13');
+		console.log('View / GoogleMap _onChangeMapPosition #13');
 		this.setState({
 			map_data: MapStore.getMapAll()
 		});
-
-		console.log('親へ座標をおくりまーす');
 		this.props.onchangeMapPosition(this.state.map_data);
 	},
 
@@ -21422,7 +21426,7 @@ var RestaurantList = React.createClass({displayName: "RestaurantList",
 
 	componentDidMount: function(){
 		console.log('View / RestaurantList componentDidMount #10');
-
+		Action.restaurantAPIRequest(this.props.requestParams);
 		ListStore.addChangeListener(this._onChangeRestaurantData);
 	},
 

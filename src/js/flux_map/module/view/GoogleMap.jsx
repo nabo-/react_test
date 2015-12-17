@@ -54,12 +54,10 @@ var GoogleMap = React.createClass({
 	},
 
 	_onChangeMapPosition: function(){
-		console.log('View / GoogleMap onchangeMapPosition #13');
+		console.log('View / GoogleMap _onChangeMapPosition #13');
 		this.setState({
 			map_data: MapStore.getMapAll()
 		});
-
-		console.log('親へ座標をおくりまーす');
 		this.props.onchangeMapPosition(this.state.map_data);
 	},
 

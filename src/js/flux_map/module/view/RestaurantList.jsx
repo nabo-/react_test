@@ -27,7 +27,7 @@ var RestaurantList = React.createClass({
 
 	componentDidMount: function(){
 		console.log('View / RestaurantList componentDidMount #10');
-
+		Action.restaurantAPIRequest(this.props.requestParams);
 		ListStore.addChangeListener(this._onChangeRestaurantData);
 	},
 
