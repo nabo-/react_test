@@ -21426,7 +21426,8 @@ var RestaurantList = React.createClass({displayName: "RestaurantList",
 			latitude: PropTypes.number.isRequired,
 			longitude: PropTypes.number.isRequired,
 			zoomLevel: PropTypes.number.isRequired
-		}
+		},
+		onchangeRestaurantData: PropTypes.func.isRequired
 	},
 
 	getInitialState: function(){
@@ -21444,6 +21445,8 @@ var RestaurantList = React.createClass({displayName: "RestaurantList",
 		this.setState({
 			restaurant_data: ListStore.getData()
 		});
+
+		this.props.onchangeRestaurantData(this.state.restaurant_data);
 	},
 
 	render: function() {
@@ -21514,6 +21517,10 @@ var SearchMap = React.createClass({displayName: "SearchMap",
 		Action.changeParam(map_data);
 	},
 
+	handleRestaurantData: function(restaurant_data){
+		console.log(restaurant_data);
+	},
+
 	render: function(){
 
 		return (
@@ -21522,7 +21529,7 @@ var SearchMap = React.createClass({displayName: "SearchMap",
 					React.createElement(GoogleMap, {requestParams: this.state.requestParams, onchangeMapPosition: this.handleMapCenterPosition})
 				), 
 				React.createElement("div", {id: "sub"}, 
-					React.createElement(RestaurantList, {requestParams: this.state.requestParams})
+					React.createElement(RestaurantList, {requestParams: this.state.requestParams, onchangeRestaurantData: this.handleRestaurantData})
 				)
 			)
 		);

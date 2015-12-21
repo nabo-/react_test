@@ -30,6 +30,10 @@ var SearchMap = React.createClass({
 		Action.changeParam(map_data);
 	},
 
+	handleRestaurantData: function(restaurant_data){
+		console.log(restaurant_data);
+	},
+
 	render: function(){
 
 		return (
@@ -38,7 +42,7 @@ var SearchMap = React.createClass({
 					<GoogleMap requestParams={this.state.requestParams} onchangeMapPosition={this.handleMapCenterPosition} />
 				</div>
 				<div id="sub">
-					<RestaurantList requestParams={this.state.requestParams} />
+					<RestaurantList requestParams={this.state.requestParams} onchangeRestaurantData={this.handleRestaurantData} />
 				</div>
 			</div>
 		);

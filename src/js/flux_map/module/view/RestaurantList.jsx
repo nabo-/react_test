@@ -13,7 +13,8 @@ var RestaurantList = React.createClass({
 			latitude: PropTypes.number.isRequired,
 			longitude: PropTypes.number.isRequired,
 			zoomLevel: PropTypes.number.isRequired
-		}
+		},
+		onchangeRestaurantData: PropTypes.func.isRequired
 	},
 
 	getInitialState: function(){
@@ -31,6 +32,8 @@ var RestaurantList = React.createClass({
 		this.setState({
 			restaurant_data: ListStore.getData()
 		});
+
+		this.props.onchangeRestaurantData(this.state.restaurant_data);
 	},
 
 	render: function() {
