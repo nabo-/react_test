@@ -15,7 +15,6 @@ var ListItem = React.createClass({
 	},
 
 	render: function() {
-		console.log('View / ListItem レンダリング');
 		return (
 			<li className="l-list__item" data-num={this.props.id}>
 				<a href={this.props.url} className="l-list__layout">

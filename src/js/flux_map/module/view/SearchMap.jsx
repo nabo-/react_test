@@ -9,29 +9,25 @@ var Action = require('../action/Action.jsx');
 var SearchMap = React.createClass({
 
 	getInitialState: function(){
-		console.log('View / searchMap getInitialState #1');
 		return {
-			requestParams: SearchMapStore.getParamData()
+			requestParams: SearchMapStore.getData()
 		};
 	},
 
 	componentDidMount: function(){
-		console.log('View / searchMap componentDidMount #13');
 		SearchMapStore.addChangeListener(this._changeParam);
 	},
 
 	_changeParam: function(){
-		console.log('View / searchMap _changeHash');
 		this.setState({
-			requestParams: SearchMapStore.getParamData()
+			requestParams: SearchMapStore.getData()
 		});
-		Action.restaurantAPIRequest(this.state.requestParams);
+		Action.RequestRestaurantData(this.state.requestParams);
 	},
 
 	// googlemapの中心座標をMapコンポーネントから受け取って処理するもの
 	handleMapCenterPosition: function(map_data){
-		console.log(map_data);
-		Action.paramChange(map_data);
+		Action.changeParam(map_data);
 	},
 
 	render: function(){
@@ -39,7 +35,7 @@ var SearchMap = React.createClass({
 		return (
 			<div id="wrapper">
 				<div id="main">
-					<GoogleMap onchangeMapPosition={this.handleMapCenterPosition} />
+					<GoogleMap requestParams={this.state.requestParams} onchangeMapPosition={this.handleMapCenterPosition} />
 				</div>
 				<div id="sub">
 					<RestaurantList requestParams={this.state.requestParams} />

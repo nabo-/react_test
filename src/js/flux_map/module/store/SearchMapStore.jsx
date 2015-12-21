@@ -2,60 +2,61 @@ var Dispatcher = require('../dispatcher/Dispatcher.jsx');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
-var CHANGE_EVENT_LIST = 'change';
-
-// データ
-var data_state = {
-	param_data: {
-		latitude: 35.690921,
-		longitude: 139.70025799999996,
-		zoomLevel: 17
-	}
-};
+var MapStore = require('./MapStore.jsx');
 
 var SearchMapStore = assign({}, EventEmitter.prototype, {
 
-	getParamData: function(){
-		console.log('Store / SearchMapStore getHashData');
-		return data_state.param_data;
+	data: {
+		param_data: {
+			latitude: 35.690921,
+			longitude: 139.70025799999996,
+			zoomLevel: 15
+		}
+	},
+
+	getData: function(){
+		return SearchMapStore.data.param_data;
 	},
 
 	emitChange: function(){
-		console.log('Store / SearchMapStore emitChangeList #17');
-		this.emit(CHANGE_EVENT_LIST);
+		this.emit('change');
 	},
+
 	// dataの変更を受け取ったら実行
 	addChangeListener: function(callback){
-		console.log('Store / SearchMapStore addChangeListener #19');
-		this.on(CHANGE_EVENT_LIST, callback);
+		this.on('change', callback);
+	},
+
+	removeChangeListener: function(callback){
+		this.removeListener('change', callback);
 	},
 
 	// dispatcher 処理登録
 	dispatchToken: Dispatcher.register(function(payload){
-		console.log('Store / SearchMapStore dispatchToken #16');
 
-		if(payload.actionType === 'change_param'){
-			console.log('change_param');
-			data_state.param_data = payload.value;
+		var action_type = payload.action.type;
 
-			// 変更を通知
+		if(action_type === 'change_param'){
+			var data = {};
+
+			if(typeof payload.action.target.latitude !== 'undefined'){
+				data.latitude = payload.action.target.latitude;
+			}
+			if(typeof payload.action.target.longitude !== 'undefined'){
+				data.longitude = payload.action.target.longitude;
+			}
+			if(typeof payload.action.target.zoomLevel !== 'undefined'){
+				data.zoomLevel = payload.action.target.zoomLevel;
+			}
+
+
+			Dispatcher.waitFor([MapStore.dispatchToken]);
+
+			SearchMapStore.data.param_data = data;
 			SearchMapStore.emitChange();
 		}
+
 	})
 });
-//
-//
-//
-//
-// CityStore.dispatchToken = flightDispatcher.register(function(payload) {
-//   if (payload.actionType === 'country-update') {
-//     // `CountryStore.country` may not be updated.
-//     flightDispatcher.waitFor([CountryStore.dispatchToken]);
-//     // `CountryStore.country` is now guaranteed to be updated.
-//
-//     // Select the default city for the new country
-//     CityStore.city = getDefaultCityForCountry(CountryStore.country);
-//   }
-// });
 
 module.exports = SearchMapStore;

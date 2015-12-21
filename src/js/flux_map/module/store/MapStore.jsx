@@ -2,39 +2,38 @@ var Dispatcher = require('../dispatcher/Dispatcher.jsx');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
-var CHANGE_EVENT_MAP = 'change';
-
-// データ
-var data_state = {
-	map_data: {
-		latitude: 35.690921,
-		longitude: 139.70025799999996,
-		zoomLevel: 15
-	}
-};
 
 var MapStore = assign({}, EventEmitter.prototype, {
-	getMapAll: function(){
-		console.log('Store / MapStore getMapAll #4');
-		return data_state.map_data;
+
+	data: {
+		map_data: []
 	},
+
+	getData: function(){
+		return MapStore.data.map_data;
+	},
+
 	emitChange: function(){
-		console.log('Store / MapStore emitChangeMap #12');
-		this.emit(CHANGE_EVENT_MAP);
+		this.emit('change');
 	},
+
 	// 地図データの変更があった
 	addChangeListener: function(callback){
-		console.log('Store / MapStore addChangeMapListener #9');
-		this.on(CHANGE_EVENT_MAP, callback);
+		this.on('change', callback);
+	},
+
+	removeChangeListener: function(callback){
+		this.removeListener('change', callback);
 	},
 	// dispatcher 処理登録
 	dispatchToken: Dispatcher.register(function(payload){
-		console.log('Store / MapStore dispatchToken #18');
+		var action_type = payload.action.type;
 
-		if(payload.actionType === 'map_center_change'){
-			data_state.map_data = payload.value;
+		if(action_type === 'change_map_center'){
+			MapStore.data.map_data = payload.action.target;
 			MapStore.emitChange();
 		}
+
 	})
 });
 

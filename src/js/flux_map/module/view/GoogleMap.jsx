@@ -8,22 +8,23 @@ var PropTypes = React.PropTypes;
 var GoogleMap = React.createClass({
 
 	PropTypes: {
+		requestParams: {
+			latitude: PropTypes.number.isRequired,
+			longitude: PropTypes.number.isRequired,
+			zoomLevel: PropTypes.number.isRequired
+		},
 		onchangeMapPosition: PropTypes.func.isRequired
 	},
 
 	getInitialState: function(){
-		console.log('View / GoogleMap getInitialState #3');
 		return {
 			map: null,
-			map_data: MapStore.getMapAll(),
+			map_data: this.props.requestParams,
 			markers: []
 		};
 	},
 
 	componentDidMount: function(){
-
-		console.log('View / GoogleMap componentDidMount #8');
-		MapStore.addChangeListener(this._onChangeMapPosition);
 
 		// ReactDOM.findDOMNode(component) で  DOMアクセスできる
 		var gMap = new google.maps.Map(ReactDOM.findDOMNode(this), {
@@ -51,14 +52,24 @@ var GoogleMap = React.createClass({
 				Action.changeMapCenterPosition(data);
 			}, 1000);
 		});
+
+		MapStore.addChangeListener(this._onChangeMapPosition);
+
+		// Mapのstoreにある初期データを親コンポーネントに伝える
+		this.props.onchangeMapPosition(this.state.map_data);
 	},
 
 	_onChangeMapPosition: function(){
-		console.log('View / GoogleMap _onChangeMapPosition #13');
+		var _this = this;
+
 		this.setState({
-			map_data: MapStore.getMapAll()
+			map_data: MapStore.getData()
 		});
-		this.props.onchangeMapPosition(this.state.map_data);
+
+		setTimeout(function(){
+			_this.props.onchangeMapPosition(_this.state.map_data);
+		}, 10);
+
 	},
 
 	render: function() {

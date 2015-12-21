@@ -13,34 +13,27 @@ var RestaurantList = React.createClass({
 			latitude: PropTypes.number.isRequired,
 			longitude: PropTypes.number.isRequired,
 			zoomLevel: PropTypes.number.isRequired
-		},
-
+		}
 	},
 
 	getInitialState: function(){
-		console.log('View / RestaurantList getInitialState #5');
-
 		return {
-			restaurant_data: ListStore.getListAll()
+			restaurant_data: []
 		};
 	},
 
 	componentDidMount: function(){
-		console.log('View / RestaurantList componentDidMount #10');
-		Action.restaurantAPIRequest(this.props.requestParams);
-		ListStore.addChangeListener(this._onChangeRestaurantData);
+		Action.RequestRestaurantData(this.props.requestParams);
+		ListStore.addLoadListener(this._onChangeRestaurantData);
 	},
 
 	_onChangeRestaurantData: function(){
-		console.log('View / RestaurantList _onChangeRestaurantData #22');
 		this.setState({
-			restaurant_data: ListStore.getListAll()
+			restaurant_data: ListStore.getData()
 		});
 	},
 
 	render: function() {
-		console.log('View / RestaurantList render #7');
-
 		var _this = this;
 		var lists = this.state.restaurant_data.map(function(list, index){
 
