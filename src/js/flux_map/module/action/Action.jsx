@@ -13,6 +13,14 @@ var Action = {
 		});
 	},
 
+	changeMarker: function(data){
+		console.log('Action / changeMarker');
+		Dispatcher.handleViewAction({
+			type: 'change_marker',
+			target: data
+		});
+	},
+
 	RequestRestaurantData: function(data){
 		console.log('Action / RequestRestaurantData');
 

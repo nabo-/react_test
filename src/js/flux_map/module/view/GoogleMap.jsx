@@ -53,7 +53,9 @@ var GoogleMap = React.createClass({
 			}, 1000);
 		});
 
+
 		MapStore.addChangeListener(this._onChangeMapPosition);
+		MapStore.addMarkerChange(this._onChangeMarker);
 
 		// Mapのstoreにある初期データを親コンポーネントに伝える
 		this.props.onchangeMapPosition(this.state.map_data);
@@ -69,8 +71,14 @@ var GoogleMap = React.createClass({
 		setTimeout(function(){
 			_this.props.onchangeMapPosition(_this.state.map_data);
 		}, 10);
-
 	},
+
+	_onChangeMarker: function(){
+		this.setState({
+			markers: MapStore.getMarkerData()
+		});
+	},
+
 
 	render: function() {
 		return (

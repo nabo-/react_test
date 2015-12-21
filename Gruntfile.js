@@ -75,17 +75,6 @@ module.exports = function (grunt) {
 			}
 		},
 
-		imagemin: {
-			noraml: {
-				files: [{
-					expand: true,
-					cwd: '<%= path.img_src %>',
-					src: ['*.{png,jpg}'],
-					dest: '<%= path.build %>/img/'
-				}]
-			}
-		},
-
 		browserify: {
 			dist: {
 				files: {
@@ -147,7 +136,6 @@ module.exports = function (grunt) {
 	grunt.registerTask('build:html', ['assemble']);
 	grunt.registerTask('build:css', ['sass', 'autoprefixer', 'csso']);
 	grunt.registerTask('build:js', ['browserify']);
-	grunt.registerTask('build:img', ['imagemin']);
 
 	grunt.registerTask('build', ['build:html', 'build:css', 'build:js', 'build:img', 'clean']);
 

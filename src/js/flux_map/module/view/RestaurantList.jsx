@@ -6,6 +6,8 @@ var ListItem = require('./ListItem.jsx');
 
 var PropTypes = React.PropTypes;
 
+
+// SearchMap でsetState して　各コンポーネントに props で渡した方がよさげ
 var RestaurantList = React.createClass({
 
 	PropTypes: {
@@ -29,11 +31,16 @@ var RestaurantList = React.createClass({
 	},
 
 	_onChangeRestaurantData: function(){
+
+		var _this = this;
+
 		this.setState({
 			restaurant_data: ListStore.getData()
 		});
 
-		this.props.onchangeRestaurantData(this.state.restaurant_data);
+		setTimeout(function(){
+			_this.props.onchangeRestaurantData(_this.state.restaurant_data);
+		}, 10);
 	},
 
 	render: function() {

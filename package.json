@@ -22,8 +22,6 @@
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "^0.5.0",
     "grunt-contrib-connect": "~0.5.0",
-    "grunt-contrib-copy": "",
-    "grunt-contrib-imagemin": "",
     "grunt-contrib-livereload": "~0.1.2",
     "grunt-contrib-sass": "^0.9.2",
     "grunt-contrib-uglify": "~0.2.0",

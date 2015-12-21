@@ -31,7 +31,7 @@ var SearchMap = React.createClass({
 	},
 
 	handleRestaurantData: function(restaurant_data){
-		console.log(restaurant_data);
+		Action.changeMarker(restaurant_data);
 	},
 
 	render: function(){
