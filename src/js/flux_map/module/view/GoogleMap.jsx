@@ -8,36 +8,29 @@ var PropTypes = React.PropTypes;
 var GoogleMap = React.createClass({
 
 	PropTypes: {
-		requestParams: {
+		map_position: {
 			latitude: PropTypes.number.isRequired,
 			longitude: PropTypes.number.isRequired,
 			zoomLevel: PropTypes.number.isRequired
 		},
-		onchangeMapPosition: PropTypes.func.isRequired
-	},
-
-	getInitialState: function(){
-		return {
-			map: null,
-			map_data: this.props.requestParams,
-			markers: []
-		};
+		markers: [],
+		onChangeMapPosition: PropTypes.func.isRequired
 	},
 
 	componentDidMount: function(){
-
 		// ReactDOM.findDOMNode(component) で  DOMアクセスできる
-		var gMap = new google.maps.Map(ReactDOM.findDOMNode(this), {
+		var MAP = new google.maps.Map(ReactDOM.findDOMNode(this), {
 						center: {
-							lat: this.state.map_data.latitude,
-							lng: this.state.map_data.longitude
+							lat: this.props.map_position.latitude,
+							lng: this.props.map_position.longitude
 						},
-						zoom: this.state.map_data.zoomLevel
+						zoom: this.props.map_position.zoomLevel
 					});
 
 		var centerChangeFunc;
 
-		gMap.addListener('center_changed', function(){
+		MAP.addListener('center_changed', function(){
+
 			var _this = this;
 			clearTimeout(centerChangeFunc);
 
@@ -49,36 +42,22 @@ var GoogleMap = React.createClass({
 					longitude: get_center.lng(),
 					zoomLevel: zoom
 				};
-				Action.changeMapCenterPosition(data);
+
+				Action.changeMapCenter(data);
+
 			}, 1000);
 		});
 
-
-		MapStore.addChangeListener(this._onChangeMapPosition);
-		MapStore.addMarkerChange(this._onChangeMarker);
-
-		// Mapのstoreにある初期データを親コンポーネントに伝える
-		this.props.onchangeMapPosition(this.state.map_data);
+		MapStore.addChangeListener(this._onChangeMapCenter);
 	},
 
-	_onChangeMapPosition: function(){
-		var _this = this;
+	_onChangeMapCenter: function(){
+		// 地図の中心地が変わったのをStoreから検知したときにすること
+		var store_data = MapStore.getData();
 
-		this.setState({
-			map_data: MapStore.getData()
-		});
-
-		setTimeout(function(){
-			_this.props.onchangeMapPosition(_this.state.map_data);
-		}, 10);
+		// もしかしたらsetTimeout
+		this.props.onChangeMapPosition(store_data.map_position);
 	},
-
-	_onChangeMarker: function(){
-		this.setState({
-			markers: MapStore.getMarkerData()
-		});
-	},
-
 
 	render: function() {
 		return (

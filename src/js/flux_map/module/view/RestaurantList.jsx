@@ -6,17 +6,16 @@ var ListItem = require('./ListItem.jsx');
 
 var PropTypes = React.PropTypes;
 
-
 // SearchMap でsetState して　各コンポーネントに props で渡した方がよさげ
 var RestaurantList = React.createClass({
 
 	PropTypes: {
-		requestParams: {
+		request_params: {
 			latitude: PropTypes.number.isRequired,
 			longitude: PropTypes.number.isRequired,
 			zoomLevel: PropTypes.number.isRequired
 		},
-		onchangeRestaurantData: PropTypes.func.isRequired
+		onChangeRestaurantData: PropTypes.func.isRequired
 	},
 
 	getInitialState: function(){
@@ -26,21 +25,20 @@ var RestaurantList = React.createClass({
 	},
 
 	componentDidMount: function(){
-		Action.RequestRestaurantData(this.props.requestParams);
-		ListStore.addLoadListener(this._onChangeRestaurantData);
+		Action.RequestRestaurantData(this.props.request_params);
+		ListStore.addChangeListener(this._onChangeRestaurantData);
 	},
 
 	_onChangeRestaurantData: function(){
-
-		var _this = this;
+		// レストランAPIからデータが帰ってきたらやりたいこと
+		var store_data = ListStore.getData();
 
 		this.setState({
-			restaurant_data: ListStore.getData()
+			restaurant_data: store_data.restaurant_data
 		});
 
-		setTimeout(function(){
-			_this.props.onchangeRestaurantData(_this.state.restaurant_data);
-		}, 10);
+		// もしかしたらsetTimeout
+		this.props.onChangeRestaurantData(this.state.restaurant_data);
 	},
 
 	render: function() {

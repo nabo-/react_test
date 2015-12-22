@@ -7,17 +7,17 @@ var Action = {
 
 	changeParam: function(data){
 		console.log('Action / changeParam');
-		Dispatcher.handleViewAction({
-			type: 'change_param',
-			target: data
+		Dispatcher.dispatch({
+			action: 'change_param',
+			value: data
 		});
 	},
 
 	changeMarker: function(data){
 		console.log('Action / changeMarker');
-		Dispatcher.handleViewAction({
-			type: 'change_marker',
-			target: data
+		Dispatcher.dispatch({
+			action: 'change_marker',
+			value: data
 		});
 	},
 
@@ -33,9 +33,9 @@ var Action = {
 				return;
 			}
 
-			Dispatcher.handleViewAction({
-				type: 'change_restaurant',
-				target: res.body.rest
+			Dispatcher.dispatch({
+				action: 'change_restaurant',
+				value: res.body.rest
 			});
 		};
 
@@ -54,11 +54,11 @@ var Action = {
 			.end(loadCallback);
 	},
 
-	changeMapCenterPosition: function(data){
-		console.log('Action / changeMapCenterPosition');
-		Dispatcher.handleViewAction({
-			type: 'change_map_center',
-			target: data
+	changeMapCenter: function(data){
+		console.log('Action / changeMapCenter');
+		Dispatcher.dispatch({
+			action: 'change_map_center',
+			value: data
 		});
 	}
 };
