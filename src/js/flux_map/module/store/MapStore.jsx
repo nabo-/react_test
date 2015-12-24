@@ -17,17 +17,25 @@ var MapStore = assign({}, EventEmitter.prototype, {
 		return MapStore.data;
 	},
 
-	emitChange: function(){
-		this.emit('change');
+	emitPositionChange: function(){
+		this.emit('position_change');
+	},
+
+	emitMarkerChange: function(){
+		this.emit('marker_change');
 	},
 
 	// 地図データの変更があった
 	addChangeListener: function(callback){
-		this.on('change', callback);
+		this.on('position_change', callback);
 	},
 
 	removeChangeListener: function(callback){
-		this.removeListener('change', callback);
+		this.removeListener('position_change', callback);
+	},
+
+	addChangeMarker: function(callback){
+		this.on('marker_change', callback);
 	},
 
 	// dispatcher 処理登録
@@ -36,12 +44,12 @@ var MapStore = assign({}, EventEmitter.prototype, {
 
 		if(action_type === 'change_map_center'){
 			MapStore.data.map_position = payload.value;
-			MapStore.emitChange();
+			MapStore.emitPositionChange();
 		}
 
 		if(action_type === 'change_marker'){
 			MapStore.data.markers = payload.value;
-			MapStore.emitChange();
+			MapStore.emitMarkerChange();
 		}
 
 	})

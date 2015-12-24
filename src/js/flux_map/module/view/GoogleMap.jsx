@@ -17,9 +17,17 @@ var GoogleMap = React.createClass({
 		onChangeMapPosition: PropTypes.func.isRequired
 	},
 
+	getInitialState: function(){
+		return {
+			markers_obj: []
+		};
+	},
+
+	MAP: null,
+
 	componentDidMount: function(){
 		// ReactDOM.findDOMNode(component) で  DOMアクセスできる
-		var MAP = new google.maps.Map(ReactDOM.findDOMNode(this), {
+		this.MAP = new google.maps.Map(ReactDOM.findDOMNode(this), {
 						center: {
 							lat: this.props.map_position.latitude,
 							lng: this.props.map_position.longitude
@@ -29,7 +37,7 @@ var GoogleMap = React.createClass({
 
 		var centerChangeFunc;
 
-		MAP.addListener('center_changed', function(){
+		this.MAP.addListener('center_changed', function(){
 
 			var _this = this;
 			clearTimeout(centerChangeFunc);
@@ -49,6 +57,7 @@ var GoogleMap = React.createClass({
 		});
 
 		MapStore.addChangeListener(this._onChangeMapCenter);
+		MapStore.addChangeMarker(this._onChangeMarker);
 	},
 
 	_onChangeMapCenter: function(){
@@ -57,6 +66,16 @@ var GoogleMap = React.createClass({
 
 		// もしかしたらsetTimeout
 		this.props.onChangeMapPosition(store_data.map_position);
+	},
+
+	_onChangeMarker: function(){
+		var _this = this;
+		var store_data = MapStore.getData();
+
+		store_data.markers.forEach(function(marker){
+			marker.setMap(_this.MAP);
+		});
+
 	},
 
 	render: function() {

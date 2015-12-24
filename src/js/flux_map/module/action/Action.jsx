@@ -15,9 +15,34 @@ var Action = {
 
 	changeMarker: function(data){
 		console.log('Action / changeMarker');
+		var _this = this;
+
+		var markers_obj = data.map(function(obj, index){
+
+			var marker_position = {
+				lat: Number(obj.latitude),
+				lng: Number(obj.longitude)
+			};
+
+			// GoogleMapオブジェクトをどうやってひきまわすか・・・
+			var marker = new google.maps.Marker({
+				position: marker_position,
+				icon: {
+					url: 'img/point.png',
+					size: new google.maps.Size(34, 59),
+					origin: new google.maps.Point(0, 0),
+					anchor: new google.maps.Point(8, 29),
+					scaledSize: new google.maps.Size(17, 29)
+				}
+			});
+
+			return marker;
+
+		});
+
 		Dispatcher.dispatch({
 			action: 'change_marker',
-			value: data
+			value: markers_obj
 		});
 	},
 

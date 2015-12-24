@@ -42,6 +42,8 @@ var SearchMap = React.createClass({
 				}
 			}
 		});
+
+		Action.changeMarker(this.state.restaurant.data.restaurant_data);
 	},
 
 	render: function(){
